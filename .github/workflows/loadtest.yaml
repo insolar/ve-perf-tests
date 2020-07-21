@@ -27,8 +27,8 @@ jobs:
       - name: Checkout assured-ledger
         uses: actions/checkout@v2
         with:
-          path: ./go-autotests-saiv
-          repository: insolar/go-autotests-saiv
+          path: ./assured-ledger
+          repository: insolar/assured-ledger
       - name: Add bin to path
         run: echo "::add-path::${{ env.GOPATH }}/bin"
       - name: Add workspace/bin to path
