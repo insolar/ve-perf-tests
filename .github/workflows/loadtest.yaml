@@ -1,0 +1,176 @@
+name: ve-performance check
+on:
+  pull_request:
+  schedule:
+    - cron: '0 0 * * *'
+env:
+  KUBECONFIG: "${{ github.workspace }}/aks.yaml"
+  GO_VERSION: 1.14
+  CI_GOMAXPROCS: 0
+  INSOLAR_LOG_LEVEL: warn
+  GOTEST: 'gotestsum --'
+  GOPATH: /home/runner/work/
+  GOPROXY: https://proxy.golang.org,https://goproxy.io,direct
+  CORE_PATH: /home/runner/work/assured-ledger/assured-ledger/ledger-core
+  USE_MANIFESTS: aks
+  ACR_HOST: usciregistry.azurecr.io
+jobs:
+  ve-performance:
+    name: ve-performance
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/assured-ledger
+    steps:
+      - name: Checkout test
+        uses: actions/checkout@v2
+      - name: Checkout assured-ledger
+        uses: actions/checkout@v2
+        with:
+          path: ./go-autotests-saiv
+          repository: insolar/go-autotests-saiv
+      - name: Add bin to path
+        run: echo "::add-path::${{ env.GOPATH }}/bin"
+      - name: Add workspace/bin to path
+        run: echo "::add-path::$GITHUB_WORKSPACE/bin"
+      - name: save kubeconfig
+        run: echo "${{secrets.CLOUD_KUBECONFIG}}" >> aks.yaml
+      - name: Build docker images
+        run: |
+          make docker-build
+        working-directory: ${{ env.CORE_PATH }}
+      - name: Push assured ledger image to Azure container registry registry
+        run: |
+          docker login $ACR_HOST --username ${{secrets.ACR_SP_ID}} --password ${{secrets.ACR_SP_SECRET}}
+          docker tag insolar/assured-ledger:latest $ACR_HOST/assured-ledger:${GITHUB_SHA:0:8}
+          docker push $ACR_HOST/assured-ledger:${GITHUB_SHA:0:8}
+      - name: copy docker auth secret
+        run: cp /home/runner/.docker/config.json ledger-core/scripts/deploy/kube/aks/dockerconfigjson
+      - name: set tag for image
+        run: |
+          sed -i "s/imagetag/${GITHUB_SHA:0:8}/g" ledger-core/scripts/deploy/kube/*/*.*
+          cat /home/runner/work/assured-ledger/assured-ledger/ledger-core/scripts/deploy/kube/aks/kustomization.yaml
+      - name: set kube namespace for 5node
+        run: |
+          echo '::set-env name=PLACEHOLDER::'placeholder
+          echo '::set-env name=KUB_NAMESPACE::'${GITHUB_SHA:0:8}5node
+      - name: template GIT_SHA to deployment manifests for 5 node
+        run: |
+          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" ledger-core/scripts/deploy/kube/*/*.*
+          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" ledger-core/scripts/deploy/kube/*/configuration/*.*
+      - name: run 5node network
+        run: kubectl apply -k ledger-core/scripts/deploy/kube/5node
+      - name: wait for successfull rollout
+        run: kubectl -n ${KUB_NAMESPACE} rollout status sts/virtual
+      - name: pulsewatcher
+        run: |
+          for try in {0..100}; do
+            if kubectl -n ${KUB_NAMESPACE} exec -i deploy/pulsewatcher -- bash -c 'pulsewatcher -c /etc/pulsewatcher/pulsewatcher.yaml -s' | grep 'READY' | grep -v 'NOT'; then
+              echo "network ready!"; exit 0
+            else echo -n '.'; sleep 5
+            fi
+          done
+      - name: start test 5 node
+        run: |
+          cd ${{ github.workspace }}/ve-perf-tests
+          TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=5 go run cmd/test/main.go
+          cat scaling.csv
+      - name: cleanup
+        run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
+      - name: set kube namespace for 10node
+        run: |
+          echo '::set-env name=PLACEHOLDER::'${KUB_NAMESPACE}
+          echo '::set-env name=KUB_NAMESPACE::'${GITHUB_SHA:0:8}10node
+      - name: template GIT_SHA to deployment manifests for 10 node
+        run: |
+          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" ledger-core/scripts/deploy/kube/*/*.*
+          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" ledger-core/scripts/deploy/kube/*/configuration/*.*
+      - name: run 10node network
+        run: kubectl apply -k ledger-core/scripts/deploy/kube/10node
+      - name: wait for successfull rollout
+        run: kubectl -n ${KUB_NAMESPACE} rollout status sts/virtual
+      - name: pulsewatcher
+        run: |
+          for try in {0..100}; do
+            if kubectl -n ${KUB_NAMESPACE} exec -i deploy/pulsewatcher -- bash -c 'pulsewatcher -c /etc/pulsewatcher/pulsewatcher.yaml -s' | grep 'READY' | grep -v 'NOT'; then
+              echo "network ready!"; exit 0
+            else echo -n '.'; sleep 5
+            fi
+          done
+      - name: start test 10 node
+        run: |
+          cd ${{ github.workspace }}/ve-perf-tests
+          TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=10 go run cmd/test/main.go
+          cat scaling.csv
+      - name: cleanup
+        run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
+      - name: set kube namespace for 15node
+        run: |
+          echo '::set-env name=PLACEHOLDER::'${KUB_NAMESPACE}
+          echo '::set-env name=KUB_NAMESPACE::'${GITHUB_SHA:0:8}15node
+      - name: template GIT_SHA to deployment manifests for 15 node
+        run: |
+          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" ledger-core/scripts/deploy/kube/*/*.*
+          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" ledger-core/scripts/deploy/kube/*/configuration/*.*
+      - name: run 15node network
+        run: kubectl apply -k ledger-core/scripts/deploy/kube/15node
+      - name: wait for successfull rollout
+        run: kubectl -n ${KUB_NAMESPACE} rollout status sts/virtual
+      - name: pulsewatcher
+        run: |
+          for try in {0..100}; do
+            if kubectl -n ${KUB_NAMESPACE} exec -i deploy/pulsewatcher -- bash -c 'pulsewatcher -c /etc/pulsewatcher/pulsewatcher.yaml -s' | grep 'READY' | grep -v 'NOT'; then
+              echo "network ready!"; exit 0
+            else echo -n '.'; sleep 5
+            fi
+          done
+      - name: start test 15 node
+        run: |
+          cd ${{ github.workspace }}/ve-perf-tests
+          TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=15 go run cmd/test/main.go
+          cat scaling.csv
+      - name: cleanup
+        run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
+      - name: set kube namespace for 10node
+        run: |
+          echo '::set-env name=PLACEHOLDER::'${KUB_NAMESPACE}
+          echo '::set-env name=KUB_NAMESPACE::'${GITHUB_SHA:0:8}20node
+      - name: template GIT_SHA to deployment manifests for 20 node
+        run: |
+          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" ledger-core/scripts/deploy/kube/*/*.*
+          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" ledger-core/scripts/deploy/kube/*/configuration/*.*
+      - name: run 20node network
+        run: kubectl apply -k ledger-core/scripts/deploy/kube/20node
+      - name: wait for successfull rollout
+        run: kubectl -n ${KUB_NAMESPACE} rollout status sts/virtual
+      - name: pulsewatcher
+        run: |
+          for try in {0..100}; do
+            if kubectl -n ${KUB_NAMESPACE} exec -i deploy/pulsewatcher -- bash -c 'pulsewatcher -c /etc/pulsewatcher/pulsewatcher.yaml -s' | grep 'READY' | grep -v 'NOT'; then
+              echo "network ready!"; exit 0
+            else echo -n '.'; sleep 5
+            fi
+          done
+      - name: start test 20 node
+        run: |
+          cd ${{ github.workspace }}/ve-perf-tests
+          TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=20 go run cmd/test/main.go
+          cat scaling.csv
+      - name: cleanup
+        if: always()
+        run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
+      - name: Send report
+        run: |
+          cd ${{ github.workspace }}/ve-perf-tests
+          REPORT_CSV_FILE=scaling.csv REPORT_PNG_FILE=report.png go run cmd/report/main.go
+          filename=$(date +"%F-%H-%M")-${GITHUB_SHA:0:8}.png
+          echo '::set-env name=FILE_NAME::'${filename}
+          curl -basic --user "${{ secrets.WEBDAV_USERNAME }}:${{ secrets.WEBDAV_PASSWORD }}" -T report.png "https://reports.garage.insolar.io/ve-perf-tests/${filename}"
+      - name: Send notification to Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+          text: https://reports.garage.insolar.io/ve-perf-tests/$FILE_NAME
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.ACTIONS_NOTIFICATIONS_SLACK_HOOK_URL }}
