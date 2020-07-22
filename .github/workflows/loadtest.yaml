@@ -29,6 +29,8 @@ jobs:
         run: echo "${{secrets.CLOUD_KUBECONFIG}}" >> aks.yaml
       - name: Build docker images
         run: |
+          pwd
+          ls -a
           cd ${{ github.workspace }}/assured-ledger
           make docker-build
         working-directory: ${{ env.CORE_PATH }}
