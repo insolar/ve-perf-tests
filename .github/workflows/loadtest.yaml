@@ -11,7 +11,7 @@ env:
   GOTEST: 'gotestsum --'
   GOPATH: /home/runner/work/
   GOPROXY: https://proxy.golang.org,https://goproxy.io,direct
-  CORE_PATH: /home/runner/work/assured-ledger/assured-ledger/ledger-core
+  CORE_PATH: /home/runner/work/ve-perf-tests/ve-perf-tests/assured-ledger/ledger-core
   USE_MANIFESTS: aks
   ACR_HOST: usciregistry.azurecr.io
 jobs:
@@ -30,10 +30,7 @@ jobs:
           path: ./assured-ledger
           repository: insolar/assured-ledger
       - name: Add bin to path
-        run: |
-          pwd
-          ls -a
-          echo "::add-path::${{ env.GOPATH }}/bin"
+        run: echo "::add-path::${{ env.GOPATH }}/bin"
       - name: Add workspace/bin to path
         run: echo "::add-path::$GITHUB_WORKSPACE/bin"
       - name: save kubeconfig
