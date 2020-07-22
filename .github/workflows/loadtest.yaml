@@ -37,6 +37,7 @@ jobs:
         run: echo "${{secrets.CLOUD_KUBECONFIG}}" >> aks.yaml
       - name: Build docker images
         run: |
+          cd ${{ CORE_PATH }}
           make docker-build
         working-directory: ${{ env.CORE_PATH }}
       - name: Push assured ledger image to Azure container registry registry
