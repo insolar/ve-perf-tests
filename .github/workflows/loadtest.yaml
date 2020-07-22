@@ -32,6 +32,8 @@ jobs:
           pwd
           ls -a
           cd ${{ github.workspace }}/assured-ledger
+          pwd
+          ls -a
           make docker-build
         working-directory: ${{ env.CORE_PATH }}
       - name: Push assured ledger image to Azure container registry registry
