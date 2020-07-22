@@ -21,7 +21,7 @@ func (a *GetContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
 }
 func (a *GetContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
 	url := a.Cfg.TargetUrl + util.WalletGetBalancePath
-	ref := util.GetNextWallet(a.Runner)
+	ref := a.TestData.(*util.SharedData).GetNextData()
 	balance, err := util.GetWalletBalance(a.client, url, ref)
 	if err != nil {
 		return loaderbot.DoResult{

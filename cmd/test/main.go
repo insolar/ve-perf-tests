@@ -38,25 +38,27 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Printf("wallets created:\n")
+	for _, w := range wallets {
+		fmt.Printf(w + "\n")
+	}
 	scalingResults := csv.NewWriter(loaderbot.CreateFileOrAppend(scalingCSVFileName))
 
 	cfg := &loaderbot.RunnerConfig{
 		TargetUrl:        target,
 		Name:             "get_attack",
-		Attackers:        500,
+		SystemMode:       loaderbot.PrivateSystem,
+		Attackers:        1000,
 		AttackerTimeout:  25,
-		StartRPS:         440,
+		StartRPS:         200,
 		StepDurationSec:  20,
-		StepRPS:          10,
-		TestTimeSec:      1200,
-		DynamicAttackers: true,
-		ScalingAttackers: 200,
-		ScalingSkipTicks: 1,
+		StepRPS:          5,
+		TestTimeSec:      3600,
 		FailOnFirstError: true,
 	}
 	lt := loaderbot.NewRunner(cfg,
 		&ve_perf_tests.GetContractTestAttack{},
-		&loaderbot.TestData{
+		&util.SharedData{
 			Mutex: &sync.Mutex{},
 			Data:  wallets,
 		},
@@ -71,20 +73,18 @@ func main() {
 	cfg2 := &loaderbot.RunnerConfig{
 		TargetUrl:        target,
 		Name:             "set_attack",
-		Attackers:        500,
+		SystemMode:       loaderbot.PrivateSystem,
+		Attackers:        1000,
 		AttackerTimeout:  25,
-		StartRPS:         440,
+		StartRPS:         200,
 		StepDurationSec:  20,
-		StepRPS:          10,
-		TestTimeSec:      1200,
-		DynamicAttackers: true,
-		ScalingAttackers: 200,
-		ScalingSkipTicks: 1,
+		StepRPS:          5,
+		TestTimeSec:      3600,
 		FailOnFirstError: true,
 	}
 	lt2 := loaderbot.NewRunner(cfg2,
 		&ve_perf_tests.SetContractTestAttack{},
-		&loaderbot.TestData{
+		&util.SharedData{
 			Mutex: &sync.Mutex{},
 			Data:  wallets,
 		},

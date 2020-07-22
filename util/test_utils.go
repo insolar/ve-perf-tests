@@ -9,12 +9,11 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"sync"
 	"testing"
 
 	"github.com/insolar/assured-ledger/ledger-core/application/api/requester"
 	"github.com/insolar/assured-ledger/ledger-core/reference"
-	"github.com/insolar/loaderbot"
-
 	"github.com/stretchr/testify/require"
 )
 
@@ -82,13 +81,19 @@ func unmarshalCallResponse(t testing.TB, body []byte, response *requester.Contra
 	require.NoError(t, err)
 }
 
-func GetNextWallet(a *loaderbot.Runner) string {
-	a.TestData.Lock()
-	if a.TestData.Index > len(a.TestData.Data.([]string))-1 {
-		a.TestData.Index = 0
+type SharedData struct {
+	*sync.Mutex
+	Index int
+	Data  []string
+}
+
+func (m *SharedData) GetNextData() string {
+	m.Lock()
+	if m.Index > len(m.Data)-1 {
+		m.Index = 0
 	}
-	ref := a.TestData.Data.([]string)[a.TestData.Index]
-	a.TestData.Index++
-	a.TestData.Unlock()
-	return ref
+	data := m.Data[m.Index]
+	m.Index++
+	m.Unlock()
+	return data
 }
