@@ -11,16 +11,12 @@ env:
   GOTEST: 'gotestsum --'
   GOPATH: /home/runner/work/
   GOPROXY: https://proxy.golang.org,https://goproxy.io,direct
-  CORE_PATH: /home/runner/work/ve-perf-tests/ve-perf-tests/assured-ledger/ledger-core
   USE_MANIFESTS: aks
   ACR_HOST: usciregistry.azurecr.io
 jobs:
   ve-performance:
     name: ve-performance
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ github.workspace }}/assured-ledger
     steps:
       - name: Checkout test
         uses: actions/checkout@v2
@@ -29,15 +25,11 @@ jobs:
         with:
           path: ./assured-ledger
           repository: insolar/assured-ledger
-      - name: Add bin to path
-        run: echo "::add-path::${{ env.GOPATH }}/bin"
-      - name: Add workspace/bin to path
-        run: echo "::add-path::$GITHUB_WORKSPACE/bin"
       - name: save kubeconfig
         run: echo "${{secrets.CLOUD_KUBECONFIG}}" >> aks.yaml
       - name: Build docker images
         run: |
-          cd ${{ CORE_PATH }}
+          cd ${{ github.workspace }}/assured-ledger
           make docker-build
         working-directory: ${{ env.CORE_PATH }}
       - name: Push assured ledger image to Azure container registry registry
@@ -49,8 +41,10 @@ jobs:
         run: cp /home/runner/.docker/config.json ledger-core/scripts/deploy/kube/aks/dockerconfigjson
       - name: set tag for image
         run: |
-          sed -i "s/imagetag/${GITHUB_SHA:0:8}/g" ledger-core/scripts/deploy/kube/*/*.*
-          cat /home/runner/work/assured-ledger/assured-ledger/ledger-core/scripts/deploy/kube/aks/kustomization.yaml
+          pwd
+          ls -a
+          sed -i "s/imagetag/${GITHUB_SHA:0:8}/g" /deploy/kube/*/*.*
+          cat ${{ github.workspace }}/ve-perf-tests/deploy/kube/aks/kustomization.yaml
       - name: set kube namespace for 5node
         run: |
           echo '::set-env name=PLACEHOLDER::'placeholder
