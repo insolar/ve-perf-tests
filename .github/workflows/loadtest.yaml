@@ -37,7 +37,7 @@ jobs:
           docker tag insolar/assured-ledger:latest $ACR_HOST/assured-ledger:${GITHUB_SHA:0:8}
           docker push $ACR_HOST/assured-ledger:${GITHUB_SHA:0:8}
       - name: copy docker auth secret
-        run: cp /home/runner/.docker/config.json /deploy/kube/aks/dockerconfigjson
+        run: cp /home/runner/.docker/config.json ${{ github.workspace }}/deploy/kube/aks/dockerconfigjson
       - name: set tag for image
         run: |
           pwd
