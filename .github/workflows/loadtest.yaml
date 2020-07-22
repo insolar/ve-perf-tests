@@ -30,7 +30,10 @@ jobs:
           path: ./assured-ledger
           repository: insolar/assured-ledger
       - name: Add bin to path
-        run: echo "::add-path::${{ env.GOPATH }}/bin"
+        run: |
+          pwd
+          ls -a
+          echo "::add-path::${{ env.GOPATH }}/bin"
       - name: Add workspace/bin to path
         run: echo "::add-path::$GITHUB_WORKSPACE/bin"
       - name: save kubeconfig
