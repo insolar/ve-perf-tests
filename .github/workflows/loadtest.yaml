@@ -97,7 +97,7 @@ jobs:
       - name: template GIT_SHA to deployment manifests for 15 node
         run: |
           sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" deploy/kube/*/*.*
-          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" kube/*/configuration/*.*
+          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" deploy/kube/*/configuration/*.*
       - name: run 15node network
         run: kubectl apply -k deploy/kube/15node
       - name: wait for successfull rollout
@@ -123,7 +123,7 @@ jobs:
       - name: template GIT_SHA to deployment manifests for 20 node
         run: |
           sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" deploy/kube/*/*.*
-          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" kube/*/configuration/*.*
+          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" deploy/kube/*/configuration/*.*
       - name: run 20node network
         run: kubectl apply -k deploy/kube/20node
       - name: wait for successfull rollout
