@@ -1,6 +1,6 @@
 ### ve-perf-tests
 
-![ve-performance check](https://github.com/insolar/ve-perf-tests/workflows/ve-performance%20check/badge.svg)
+![ve performance check](https://github.com/insolar/ve-perf-tests/workflows/ve-performance%20check/badge.svg)
 
 VE performance tests
 
