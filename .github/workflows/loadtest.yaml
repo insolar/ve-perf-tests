@@ -56,10 +56,8 @@ jobs:
           else echo -n '.'; sleep 5
           fi
           done
-      - action: "Sleep well, darling"
-        type: "SLEEP"
-        trigger_time: "ON_EVERY_EXECUTION"
-        sleep_in_sec: 30
+      - name: Sleep 30 sec
+        run: sleep 30
       - name: aggregate logs from 5 node
         run: NODES_COUNT=5 bash deploy/kube/collect_artifacts.sh
       - name: cleanup
