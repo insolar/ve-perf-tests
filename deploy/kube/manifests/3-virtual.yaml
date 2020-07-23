@@ -44,7 +44,7 @@ spec:
           ]
           env:
             - name: INSOLAR_LOG_LEVEL
-              value: debug
+              value: info
             - name: POD_IP
               valueFrom:
                 fieldRef:
