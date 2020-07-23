@@ -14,7 +14,7 @@ service:
 ledger:
   lightchainlimit: 5
 log:
-  level: Debug
+  level: info
   adapter: zerolog
   formatter: json
   outputtype: stderr
