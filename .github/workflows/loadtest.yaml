@@ -58,7 +58,7 @@ jobs:
           done
       - name: start test 5 node
         run: |
-          TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=5 go run cmd/test/main.go
+          TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=5 go run cmd/test/main_new.go
           cat scaling.csv
       - name: aggregate logs from 5 node
         run: NODES_COUNT=5 bash deploy/kube/collect_artifacts.sh
