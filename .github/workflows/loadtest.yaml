@@ -152,6 +152,6 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow
-          text: `https://reports.garage.insolar.io/ve-perf-tests/${FILE_NAME}`
+          text: 'https://reports.garage.insolar.io/ve-perf-tests/${FILE_NAME}'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTIONS_NOTIFICATIONS_SLACK_HOOK_URL }}
