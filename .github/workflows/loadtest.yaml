@@ -19,12 +19,13 @@ jobs:
         with:
           path: ./assured-ledger
           repository: insolar/assured-ledger
+          # ref: master
+          ref: PLAT-676-pulse-state-decorrelates-with-migrate
       - name: save kubeconfig
         run: echo "${{secrets.CLOUD_KUBECONFIG}}" >> aks.yaml
       - name: Build docker images
         run: |
           cd assured-ledger/ledger-core
-          git checkout PLAT-676-pulse-state-decorrelates-with-migrate
           make docker-build
       - name: Push assured ledger image to Azure container registry registry
         run: |
