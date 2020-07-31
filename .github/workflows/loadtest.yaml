@@ -202,13 +202,13 @@ jobs:
         run: |
           REPORT_CSV_FILE=scaling.csv REPORT_PNG_FILE=report.png go run cmd/report/main.go
           filename=$(date +"%F-%H-%M")-${GITHUB_SHA:0:8}.png
-          echo '::set-env name=FILE_NAME::'${filename}
+          echo "::set-env name=FILE_NAME::${filename}"
           curl -basic --user "${{ secrets.WEBDAV_USERNAME }}:${{ secrets.WEBDAV_PASSWORD }}" -T report.png "https://reports.garage.insolar.io/ve-perf-tests/${filename}"
       - name: Send notification to Slack
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
           fields: repo,message,commit,author,action,eventName,ref,workflow
-          text: https://reports.garage.insolar.io/ve-perf-tests/$FILE_NAME
+          text: 'https://reports.garage.insolar.io/ve-perf-tests/${{ env.FILE_NAME }}'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.ACTIONS_NOTIFICATIONS_SLACK_HOOK_URL }}
