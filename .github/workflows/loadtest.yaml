@@ -138,9 +138,10 @@ jobs:
         run: |
           TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=20 go run cmd/test/main.go
           cat scaling.csv
-      - name: cleanup
-        if: always()
-        run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
+# commented temporary, for debugging
+#      - name: cleanup
+#        if: always()
+#        run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
       - name: Send report
         run: |
           REPORT_CSV_FILE=scaling.csv REPORT_PNG_FILE=report.png go run cmd/report/main.go
