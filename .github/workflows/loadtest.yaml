@@ -56,10 +56,22 @@ jobs:
             else echo -n '.'; sleep 5
             fi
           done
+      - name: wait until uscifarm.insolar.io is ready
+        run: |
+          echo 'Sadly we dont know a better way than:'
+          sleep 30
       - name: start test 5 node
         run: |
           TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=5 go run cmd/test/main.go
           cat scaling.csv
+      - name: aggregate logs
+        if: always()
+        run: |
+          mkdir -p logs/${KUB_NAMESPACE}
+          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/${KUB_NAMESPACE}/pulsar-0.log
+          for pod in {0..4}; do
+            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/${KUB_NAMESPACE}/virtual-$pod.log
+          done
       - name: cleanup
         run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
       - name: set kube namespace for 10node
@@ -82,10 +94,22 @@ jobs:
             else echo -n '.'; sleep 5
             fi
           done
+      - name: wait until uscifarm.insolar.io is ready
+        run: |
+          echo 'Sadly we dont know a better way than:'
+          sleep 30
       - name: start test 10 node
         run: |
           TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=10 go run cmd/test/main.go
           cat scaling.csv
+      - name: aggregate logs
+        if: always()
+        run: |
+          mkdir -p logs/${KUB_NAMESPACE}
+          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/${KUB_NAMESPACE}/pulsar-0.log
+          for pod in {0..9}; do
+            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/${KUB_NAMESPACE}/virtual-$pod.log
+          done
       - name: cleanup
         run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
       - name: set kube namespace for 15node
@@ -108,10 +132,22 @@ jobs:
             else echo -n '.'; sleep 5
             fi
           done
+      - name: wait until uscifarm.insolar.io is ready
+        run: |
+          echo 'Sadly we dont know a better way than:'
+          sleep 30
       - name: start test 15 node
         run: |
           TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=15 go run cmd/test/main.go
           cat scaling.csv
+      - name: aggregate logs
+        if: always()
+        run: |
+          mkdir -p logs/${KUB_NAMESPACE}
+          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/${KUB_NAMESPACE}/pulsar-0.log
+          for pod in {0..14}; do
+            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/${KUB_NAMESPACE}/virtual-$pod.log
+          done
       - name: cleanup
         run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
       - name: set kube namespace for 10node
@@ -134,13 +170,35 @@ jobs:
             else echo -n '.'; sleep 5
             fi
           done
+      - name: wait until uscifarm.insolar.io is ready
+        run: |
+          echo 'Sadly we dont know a better way than:'
+          sleep 30
       - name: start test 20 node
         run: |
           TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=20 go run cmd/test/main.go
           cat scaling.csv
-      - name: cleanup
+      - name: aggregate logs
         if: always()
-        run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
+        run: |
+          mkdir -p logs/${KUB_NAMESPACE}
+          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/${KUB_NAMESPACE}/pulsar-0.log
+          for pod in {0..19}; do
+            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/${KUB_NAMESPACE}/virtual-$pod.log
+          done
+      - name: Aggregate logs into a single archive
+        if: always()
+        run: tar --warning=no-file-changed -cvzf nodes-logs.tgz ./logs || true
+      - name: Upload logs to artifacts
+        if: always()
+        uses: actions/upload-artifact@v1
+        with:
+          name: nodes-logs
+          path: nodes-logs.tgz
+# commented temporary, for debugging
+#      - name: cleanup
+#        if: always()
+#        run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
       - name: Send report
         run: |
           REPORT_CSV_FILE=scaling.csv REPORT_PNG_FILE=report.png go run cmd/report/main.go
