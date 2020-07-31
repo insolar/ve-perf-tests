@@ -67,10 +67,10 @@ jobs:
       - name: aggregate logs
         if: always()
         run: |
-          mkdir -p logs/5node
-          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/5node/pulsar-0.log
+          mkdir -p logs/${KUB_NAMESPACE}
+          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/${KUB_NAMESPACE}/pulsar-0.log
           for pod in {0..4}; do
-            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/5node/virtual-$pod.log
+            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/${KUB_NAMESPACE}/virtual-$pod.log
           done
       - name: cleanup
         run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
@@ -105,10 +105,10 @@ jobs:
       - name: aggregate logs
         if: always()
         run: |
-          mkdir -p logs/5node
-          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/5node/pulsar-0.log
-          for pod in {0..4}; do
-            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/5node/virtual-$pod.log
+          mkdir -p logs/${KUB_NAMESPACE}
+          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/${KUB_NAMESPACE}/pulsar-0.log
+          for pod in {0..9}; do
+            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/${KUB_NAMESPACE}/virtual-$pod.log
           done
       - name: cleanup
         run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
@@ -143,10 +143,10 @@ jobs:
       - name: aggregate logs
         if: always()
         run: |
-          mkdir -p logs/5node
-          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/5node/pulsar-0.log
-          for pod in {0..4}; do
-            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/5node/virtual-$pod.log
+          mkdir -p logs/${KUB_NAMESPACE}
+          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/${KUB_NAMESPACE}/pulsar-0.log
+          for pod in {0..14}; do
+            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/${KUB_NAMESPACE}/virtual-$pod.log
           done
       - name: cleanup
         run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
@@ -181,10 +181,10 @@ jobs:
       - name: aggregate logs
         if: always()
         run: |
-          mkdir -p logs/5node
-          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/5node/pulsar-0.log
-          for pod in {0..4}; do
-            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/5node/virtual-$pod.log
+          mkdir -p logs/${KUB_NAMESPACE}
+          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/${KUB_NAMESPACE}/pulsar-0.log
+          for pod in {0..19}; do
+            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/${KUB_NAMESPACE}/virtual-$pod.log
           done
       - name: Aggregate logs into a single archive
         if: always()
