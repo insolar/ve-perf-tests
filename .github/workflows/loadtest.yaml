@@ -186,6 +186,15 @@ jobs:
           for pod in {0..4}; do
             kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/5node/virtual-$pod.log
           done
+      - name: Aggregate logs into a single archive
+        if: always()
+        run: tar --warning=no-file-changed -cvzf nodes-logs.tgz ./logs || true
+      - name: Upload logs to artifacts
+        if: always()
+        uses: actions/upload-artifact@v1
+        with:
+          name: nodes-logs
+          path: nodes-logs.tgz
 # commented temporary, for debugging
 #      - name: cleanup
 #        if: always()
