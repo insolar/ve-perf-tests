@@ -50,9 +50,9 @@ func main() {
 		SystemMode:       loaderbot.PrivateSystem,
 		Attackers:        1000,
 		AttackerTimeout:  25,
-		StartRPS:         200,
+		StartRPS:         800,
 		StepDurationSec:  20,
-		StepRPS:          5,
+		StepRPS:          50,
 		TestTimeSec:      3600,
 		FailOnFirstError: true,
 	}
@@ -76,9 +76,9 @@ func main() {
 		SystemMode:       loaderbot.PrivateSystem,
 		Attackers:        1000,
 		AttackerTimeout:  25,
-		StartRPS:         200,
+		StartRPS:         800,
 		StepDurationSec:  20,
-		StepRPS:          5,
+		StepRPS:          50,
 		TestTimeSec:      3600,
 		FailOnFirstError: true,
 	}
