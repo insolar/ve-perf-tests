@@ -96,3 +96,12 @@ jobs:
       - name: cleanup
         if: always()
         run: kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
+      - name: Send notification to Slack
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+          text: '${{matrix.target}} https://reports.garage.insolar.io/ve-perf-tests/${{ env.FILE_NAME }}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.ACTIONS_NOTIFICATIONS_SLACK_HOOK_URL }}
