@@ -54,6 +54,9 @@ jobs:
       - name: Preparation - copy docker auth secret
         run: |
           docker login $ACR_HOST --username ${{secrets.ACR_SP_ID}} --password ${{secrets.ACR_SP_SECRET}}
+          ls
+          ls assured-ledger
+          ls assured-ledger/ledger-core/scripts/deploy/kube/gitops
           cp /home/runner/.docker/config.json assured-ledger/ledger-core/scripts/deploy/kube/gitops/"$INSOLAR_NETWORK_SIZE"/dockerconfigjson
       - name: Preparation - save kubeconfig
         run: echo "${{secrets.CLOUD_KUBECONFIG}}" >> aks.yaml
