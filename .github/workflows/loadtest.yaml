@@ -109,7 +109,7 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v2
       - name: concatenate all csv's
-        run:  cat aks-*.csv | tee scaling.csv
+        run:  cat aks-*/*.csv | tee scaling.csv
       - name: Send report
         if: always()
         run: |
