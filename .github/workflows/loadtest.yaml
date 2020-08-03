@@ -35,8 +35,8 @@ jobs:
     needs: prepare
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 1
       matrix:
-        max-parallel: 1
         target: [aks-5node, aks-10node, aks-15node, aks-20node]
     steps:
       - name: Checkout test
