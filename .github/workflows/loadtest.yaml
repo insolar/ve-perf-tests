@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: [aks-10node, aks-15node, aks-20node]
+        target: [aks-5node, aks-10node, aks-15node, aks-20node]
     steps:
       - name: Checkout test
         uses: actions/checkout@v2
@@ -84,6 +84,15 @@ jobs:
           for pod in $(kubectl -n $INSOLAR_NAMESPACE get po -lapp=virtual -o=custom-columns=NAME:.metadata.name --no-headers); do
             kubectl -n ${INSOLAR_NAMESPACE} logs --since=12h $pod > logs/${INSOLAR_NAMESPACE}/$pod.log
           done
+      - name: Aggregate logs into a single archive
+        if: always()
+        run: tar --warning=no-file-changed -cvzf nodes-logs.tgz ./logs || true
+      - name: Upload logs to artifacts
+        if: always()
+        uses: actions/upload-artifact@v1
+        with:
+          name: nodes-logs-${{matrix.target}}
+          path: nodes-logs.tgz
       - name: cleanup
         if: always()
         run: kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
