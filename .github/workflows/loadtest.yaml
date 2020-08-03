@@ -36,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        max-parallel: 1
         target: [aks-5node, aks-10node, aks-15node, aks-20node]
     steps:
       - name: Checkout test
@@ -120,6 +121,18 @@ jobs:
           filename=$(date +"%F-%H-%M")-${GITHUB_SHA:0:8}.png
           echo "::set-env name=FILE_NAME::${filename}"
           curl -basic --user "${{ secrets.WEBDAV_USERNAME }}:${{ secrets.WEBDAV_PASSWORD }}" -T report.png "https://reports.garage.insolar.io/ve-perf-tests/${filename}"
+      - name: Upload scaling.csv to artifacts
+        if: always()
+        uses: actions/upload-artifact@v1
+        with:
+          name: scaling.csv
+          path: scaling.csv
+      - name: Upload report.png to artifacts
+        if: always()
+        uses: actions/upload-artifact@v1
+        with:
+          name: report.png
+          path: report.png
       - name: Send notification to Slack
         if: always()
         uses: 8398a7/action-slack@v3
