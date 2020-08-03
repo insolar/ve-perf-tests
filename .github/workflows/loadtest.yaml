@@ -9,20 +9,18 @@ env:
   GOPATH: /home/runner/work/
   GOPROXY: https://proxy.golang.org,https://goproxy.io,direct
   ACR_HOST: usciregistry.azurecr.io
+  PROMETHEUS_USER: ${{secrets.PROMETHEUS_USER}}
+  PROMETHEUS_PASS: ${{secrets.PROMETHEUS_PASS}}
 jobs:
-  ve-performance:
-    name: ve-performance
+  prepare:
+    name: prepare
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout test
-        uses: actions/checkout@v2
       - name: Checkout assured-ledger
         uses: actions/checkout@v2
         with:
           path: ./assured-ledger
           repository: insolar/assured-ledger
-      - name: save kubeconfig
-        run: echo "${{secrets.CLOUD_KUBECONFIG}}" >> aks.yaml
       - name: Build docker images
         run: |
           cd assured-ledger/ledger-core
@@ -32,168 +30,90 @@ jobs:
           docker login $ACR_HOST --username ${{secrets.ACR_SP_ID}} --password ${{secrets.ACR_SP_SECRET}}
           docker tag insolar/assured-ledger:latest $ACR_HOST/assured-ledger:${GITHUB_SHA:0:8}
           docker push $ACR_HOST/assured-ledger:${GITHUB_SHA:0:8}
-      - name: copy docker auth secret
-        run: cp /home/runner/.docker/config.json deploy/kube/aks/dockerconfigjson
-      - name: set tag for image
+  ve-perf-test:
+    name: ve-perf-test
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        target: [aks-5node, aks-10node, aks-15node, aks-20node]
+    steps:
+      - name: Checkout test
+        uses: actions/checkout@v2
+      - name: Preparation - set prerequisite variables, full sha is ${{github.sha}}
+        env:
+          TARGET: ${{matrix.target}}
         run: |
-          sed -i "s/imagetag/${GITHUB_SHA:0:8}/g" deploy/kube/*/*.*
-          cat deploy/kube/aks/kustomization.yaml
-      - name: set kube namespace for 5node
+          echo "::set-env name=INSOLAR_TAG::${GITHUB_SHA:0:8}"
+          echo "::set-env name=INSOLAR_NETWORK_SIZE::${TARGET}"
+          echo "::set-env name=INSOLAR_NAMESPACE::${GITHUB_SHA:0:8}-${TARGET}"
+          echo "::set-env name=INSOLAR_DESIRED_UPTIME::300"
+      - name: Preparation - copy docker auth secret
         run: |
-          echo '::set-env name=PLACEHOLDER::'placeholder
-          echo '::set-env name=KUB_NAMESPACE::'${GITHUB_SHA:0:8}5node
-      - name: template GIT_SHA to deployment manifests for 5 node
+          docker login $ACR_HOST --username ${{secrets.ACR_SP_ID}} --password ${{secrets.ACR_SP_SECRET}}
+          cp /home/runner/.docker/config.json deploy/kube/gitops/"$INSOLAR_NETWORK_SIZE"/dockerconfigjson
+      - name: Preparation - save kubeconfig
+        run: echo "${{secrets.CLOUD_KUBECONFIG}}" >> aks.yaml
+      - name: Praparation - github token for gitops access
+        run: git config --global url."https://${{secrets.INS_SERVICE_PAT}}@github.com/".insteadOf "https://github.com/"
+      - name: Ingress access check (IF THIS STEP FAILED - CALL DEVOPS, RED ALERT)
+        run:  curl -s "https://$PROMETHEUS_USER:$PROMETHEUS_PASS@prometheus.uscifarm.insolar.io/prometheus/api/v1/labels" | jq -r '.status'
+      - name: Deploy network
         run: |
-          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" deploy/kube/*/*.*
-          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" deploy/kube/*/configuration/*.*
-      - name: run 5node network
-        run: kubectl apply -k deploy/kube/5node
-      - name: wait for successfull rollout
-        run: kubectl -n ${KUB_NAMESPACE} rollout status sts/virtual
-      - name: pulsewatcher
-        run: |
-          for try in {0..100}; do
-            if kubectl -n ${KUB_NAMESPACE} exec -i deploy/pulsewatcher -- bash -c 'pulsewatcher -c /etc/pulsewatcher/pulsewatcher.yaml -s' | grep 'READY' | grep -v 'NOT'; then
-              echo "network ready!"; exit 0
-            else echo -n '.'; sleep 5
-            fi
-          done
+          kubectl kustomize deploy/kube/gitops/"$INSOLAR_NETWORK_SIZE" | envsubst '${INSOLAR_NAMESPACE} ${INSOLAR_TAG}' | kubectl -n $INSOLAR_NAMESPACE apply -f -
+          cat deploy/kube/gitops/uscifarm-ingressroute.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl apply -f -
+      - name: Rollout check (IF THIS STEP FAILED - CALL DEV/OPS, YELLOW ALERT)
+        run: kubectl -n $INSOLAR_NAMESPACE rollout status sts/virtual --timeout=300s
+      - name: Provide link to grafana
+        run:  echo "https://monitoring.uscifarm.insolar.io/d/LmD-fXFZz/ins-network?orgId=1&refresh=10s&var-phase=All&var-packetType=All&var-namespace=$INSOLAR_NAMESPACE&from=now-10m&to=now"
+      - name: Set network start time variable
+        run:  echo "::set-env name=INSOLAR_START_TIME::$(date +'%s')"
       - name: wait until uscifarm.insolar.io is ready
         run: |
           echo 'Sadly we dont know a better way than:'
           sleep 30
-      - name: start test 5 node
+      - name: start test
         run: |
-          TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=5 go run cmd/test/main.go
+          TARGET=http://${INSOLAR_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}') go run cmd/test/main.go
           cat scaling.csv
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{matrix.target}}-scaling.csv
+          path: scaling.csv
       - name: aggregate logs
         if: always()
         run: |
-          mkdir -p logs/${KUB_NAMESPACE}
-          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/${KUB_NAMESPACE}/pulsar-0.log
-          for pod in {0..4}; do
-            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/${KUB_NAMESPACE}/virtual-$pod.log
-          done
-      - name: cleanup
-        run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
-      - name: set kube namespace for 10node
-        run: |
-          echo '::set-env name=PLACEHOLDER::'${KUB_NAMESPACE}
-          echo '::set-env name=KUB_NAMESPACE::'${GITHUB_SHA:0:8}10node
-      - name: template GIT_SHA to deployment manifests for 10 node
-        run: |
-          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" deploy/kube/*/*.*
-          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" deploy/kube/*/configuration/*.*
-      - name: run 10node network
-        run: kubectl apply -k deploy/kube/10node
-      - name: wait for successfull rollout
-        run: kubectl -n ${KUB_NAMESPACE} rollout status sts/virtual
-      - name: pulsewatcher
-        run: |
-          for try in {0..100}; do
-            if kubectl -n ${KUB_NAMESPACE} exec -i deploy/pulsewatcher -- bash -c 'pulsewatcher -c /etc/pulsewatcher/pulsewatcher.yaml -s' | grep 'READY' | grep -v 'NOT'; then
-              echo "network ready!"; exit 0
-            else echo -n '.'; sleep 5
-            fi
-          done
-      - name: wait until uscifarm.insolar.io is ready
-        run: |
-          echo 'Sadly we dont know a better way than:'
-          sleep 30
-      - name: start test 10 node
-        run: |
-          TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=10 go run cmd/test/main.go
-          cat scaling.csv
-      - name: aggregate logs
-        if: always()
-        run: |
-          mkdir -p logs/${KUB_NAMESPACE}
-          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/${KUB_NAMESPACE}/pulsar-0.log
-          for pod in {0..9}; do
-            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/${KUB_NAMESPACE}/virtual-$pod.log
-          done
-      - name: cleanup
-        run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
-      - name: set kube namespace for 15node
-        run: |
-          echo '::set-env name=PLACEHOLDER::'${KUB_NAMESPACE}
-          echo '::set-env name=KUB_NAMESPACE::'${GITHUB_SHA:0:8}15node
-      - name: template GIT_SHA to deployment manifests for 15 node
-        run: |
-          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" deploy/kube/*/*.*
-          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" deploy/kube/*/configuration/*.*
-      - name: run 15node network
-        run: kubectl apply -k deploy/kube/15node
-      - name: wait for successfull rollout
-        run: kubectl -n ${KUB_NAMESPACE} rollout status sts/virtual
-      - name: pulsewatcher
-        run: |
-          for try in {0..100}; do
-            if kubectl -n ${KUB_NAMESPACE} exec -i deploy/pulsewatcher -- bash -c 'pulsewatcher -c /etc/pulsewatcher/pulsewatcher.yaml -s' | grep 'READY' | grep -v 'NOT'; then
-              echo "network ready!"; exit 0
-            else echo -n '.'; sleep 5
-            fi
-          done
-      - name: wait until uscifarm.insolar.io is ready
-        run: |
-          echo 'Sadly we dont know a better way than:'
-          sleep 30
-      - name: start test 15 node
-        run: |
-          TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=15 go run cmd/test/main.go
-          cat scaling.csv
-      - name: aggregate logs
-        if: always()
-        run: |
-          mkdir -p logs/${KUB_NAMESPACE}
-          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/${KUB_NAMESPACE}/pulsar-0.log
-          for pod in {0..14}; do
-            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/${KUB_NAMESPACE}/virtual-$pod.log
-          done
-      - name: cleanup
-        run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
-      - name: set kube namespace for 10node
-        run: |
-          echo '::set-env name=PLACEHOLDER::'${KUB_NAMESPACE}
-          echo '::set-env name=KUB_NAMESPACE::'${GITHUB_SHA:0:8}20node
-      - name: template GIT_SHA to deployment manifests for 20 node
-        run: |
-          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" deploy/kube/*/*.*
-          sed -i "s/${PLACEHOLDER}/${KUB_NAMESPACE}/g" deploy/kube/*/configuration/*.*
-      - name: run 20node network
-        run: kubectl apply -k deploy/kube/20node
-      - name: wait for successfull rollout
-        run: kubectl -n ${KUB_NAMESPACE} rollout status sts/virtual
-      - name: pulsewatcher
-        run: |
-          for try in {0..100}; do
-            if kubectl -n ${KUB_NAMESPACE} exec -i deploy/pulsewatcher -- bash -c 'pulsewatcher -c /etc/pulsewatcher/pulsewatcher.yaml -s' | grep 'READY' | grep -v 'NOT'; then
-              echo "network ready!"; exit 0
-            else echo -n '.'; sleep 5
-            fi
-          done
-      - name: wait until uscifarm.insolar.io is ready
-        run: |
-          echo 'Sadly we dont know a better way than:'
-          sleep 30
-      - name: start test 20 node
-        run: |
-          TARGET=http://${KUB_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=20 go run cmd/test/main.go
-          cat scaling.csv
-      - name: aggregate logs
-        if: always()
-        run: |
-          mkdir -p logs/${KUB_NAMESPACE}
-          kubectl -n ${KUB_NAMESPACE} logs --since=12h pulsar-0 > logs/${KUB_NAMESPACE}/pulsar-0.log
-          for pod in {0..19}; do
-            kubectl -n ${KUB_NAMESPACE} logs --since=12h virtual-$pod > logs/${KUB_NAMESPACE}/virtual-$pod.log
+          mkdir -p logs/${INSOLAR_NAMESPACE}
+          kubectl -n ${INSOLAR_NAMESPACE} logs --since=12h pulsar-0 > logs/${INSOLAR_NAMESPACE}/pulsar-0.log
+          for pod in $(kubectl -n $INSOLAR_NAMESPACE get po -lapp=virtual -o=custom-columns=NAME:.metadata.name --no-headers); do
+            kubectl -n ${INSOLAR_NAMESPACE} logs --since=12h $pod > logs/${INSOLAR_NAMESPACE}/$pod.log
           done
       - name: Aggregate logs into a single archive
         if: always()
         run: tar --warning=no-file-changed -cvzf nodes-logs.tgz ./logs || true
+      - name: Upload logs to artifacts
+        if: always()
+        uses: actions/upload-artifact@v1
+        with:
+          name: nodes-logs-${{matrix.target}}
+          path: nodes-logs.tgz
       - name: cleanup
         if: always()
-        run: kubectl delete ns ${KUB_NAMESPACE} --ignore-not-found=true
+        run: kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
+  ve-perf-report:
+    name: ve-perf-report
+    needs: ve-perf-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout test
+        uses: actions/checkout@v2
+      - name: Download all artifacts
+        uses: actions/download-artifact@v2
+      - name: concatenate all csv's
+        run: |
+          for log in $(ls aks-*/*.csv | awk '{gsub(/[^[0-9]]*/,"");print}' | sort -n); do cat aks-"$log"node-scaling.csv/scaling.csv; done | tee scaling.csv
       - name: Send report
         if: always()
         run: |
@@ -201,12 +121,6 @@ jobs:
           filename=$(date +"%F-%H-%M")-${GITHUB_SHA:0:8}.png
           echo "::set-env name=FILE_NAME::${filename}"
           curl -basic --user "${{ secrets.WEBDAV_USERNAME }}:${{ secrets.WEBDAV_PASSWORD }}" -T report.png "https://reports.garage.insolar.io/ve-perf-tests/${filename}"
-      - name: Upload logs to artifacts
-        if: always()
-        uses: actions/upload-artifact@v1
-        with:
-          name: nodes-logs
-          path: nodes-logs.tgz
       - name: Upload scaling.csv to artifacts
         if: always()
         uses: actions/upload-artifact@v1
