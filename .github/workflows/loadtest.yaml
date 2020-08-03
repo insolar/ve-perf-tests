@@ -9,6 +9,8 @@ env:
   GOPATH: /home/runner/work/
   GOPROXY: https://proxy.golang.org,https://goproxy.io,direct
   ACR_HOST: usciregistry.azurecr.io
+  PROMETHEUS_USER: ${{secrets.PROMETHEUS_USER}}
+  PROMETHEUS_PASS: ${{secrets.PROMETHEUS_PASS}}
 jobs:
   prepare:
     name: prepare
