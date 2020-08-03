@@ -112,7 +112,7 @@ jobs:
         uses: actions/download-artifact@v2
       - name: concatenate all csv's
         run: |
-          for log in $(ls aks-*/*.csv | awk '{gsub(/[^[0-9]]*/,"");print}' | sort -n); do cat aks-"$log"node/scaling.csv; done | tee scaling.csv
+          for log in $(ls aks-*/*.csv | awk '{gsub(/[^[0-9]]*/,"");print}' | sort -n); do cat aks-"$log"node-scaling.csv/scaling.csv; done | tee scaling.csv
       - name: Send report
         if: always()
         run: |
