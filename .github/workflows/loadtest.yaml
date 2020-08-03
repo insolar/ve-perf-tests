@@ -40,12 +40,6 @@ jobs:
     steps:
       - name: Checkout test
         uses: actions/checkout@v2
-      - name: Checkout assured-ledger
-        uses: actions/checkout@v2
-        with:
-          ref: OPS-281-aks
-          path: ./assured-ledger
-          repository: insolar/assured-ledger
       - name: Preparation - set prerequisite variables, full sha is ${{github.sha}}
         env:
           TARGET: ${{matrix.target}}
@@ -57,7 +51,7 @@ jobs:
       - name: Preparation - copy docker auth secret
         run: |
           docker login $ACR_HOST --username ${{secrets.ACR_SP_ID}} --password ${{secrets.ACR_SP_SECRET}}
-          cp /home/runner/.docker/config.json assured-ledger/ledger-core/scripts/deploy/kube/gitops/"$INSOLAR_NETWORK_SIZE"/dockerconfigjson
+          cp /home/runner/.docker/config.json deploy/kube/gitops/"$INSOLAR_NETWORK_SIZE"/dockerconfigjson
       - name: Preparation - save kubeconfig
         run: echo "${{secrets.CLOUD_KUBECONFIG}}" >> aks.yaml
       - name: Praparation - github token for gitops access
@@ -65,7 +59,7 @@ jobs:
       - name: Ingress access check (IF THIS STEP FAILED - CALL DEVOPS, RED ALERT)
         run:  curl -s "https://$PROMETHEUS_USER:$PROMETHEUS_PASS@prometheus.uscifarm.insolar.io/prometheus/api/v1/labels" | jq -r '.status'
       - name: Deploy network
-        run: kubectl kustomize assured-ledger/ledger-core/scripts/deploy/kube/gitops/"$INSOLAR_NETWORK_SIZE" | envsubst '${INSOLAR_NAMESPACE} ${INSOLAR_TAG}' | kubectl -n $INSOLAR_NAMESPACE apply -f -
+        run: kubectl kustomize deploy/kube/gitops/"$INSOLAR_NETWORK_SIZE" | envsubst '${INSOLAR_NAMESPACE} ${INSOLAR_TAG}' | kubectl -n $INSOLAR_NAMESPACE apply -f -
       - name: Rollout check (IF THIS STEP FAILED - CALL DEV/OPS, YELLOW ALERT)
         run: kubectl -n $INSOLAR_NAMESPACE rollout status sts/virtual --timeout=300s
       - name: Provide link to grafana
