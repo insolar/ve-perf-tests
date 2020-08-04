@@ -15,7 +15,7 @@ ma_shard_count: 0
 contracts:
   insgocc: ""
   outdir: ""
-majority_rule: 5
+majority_rule: 20
 min_roles:
   virtual: 3
   heavy_material: 0
