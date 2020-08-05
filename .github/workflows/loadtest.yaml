@@ -138,12 +138,18 @@ jobs:
         with:
           name: scaling.csv
           path: scaling.csv
-      - name: Upload report.png to artifacts
+      - name: Upload csv to artifacts
+          if: always()
+          uses: actions/upload-artifact@v1
+          with:
+            name: csv_report
+            path: *.csv
+      - name: Upload png to artifacts
         if: always()
         uses: actions/upload-artifact@v1
         with:
-          name: report.png
-          path: report.png
+          name: graph_report
+          path: *.png
       - name: Send notification to Slack
         if: always()
         uses: 8398a7/action-slack@v3
