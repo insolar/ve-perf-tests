@@ -117,6 +117,13 @@ jobs:
       - name: concatenate all csv's
         run: |
           for log in $(ls aks-*/*.csv | awk '{gsub(/[^[0-9]]*/,"");print}' | sort -n); do cat aks-"$log"node-scaling.csv/scaling.csv; done | tee scaling.csv
+      - name: Send report
+        if: always()
+        run: |
+          REPORT_CSV_FILE=scaling.csv REPORT_PNG_FILE=report.png go run cmd/report/main.go
+          filename=$(date +"%F-%H-%M")-${GITHUB_SHA:0:8}.png
+          echo "::set-env name=FILE_NAME::${filename}"
+          curl -basic --user "${{ secrets.WEBDAV_USERNAME }}:${{ secrets.WEBDAV_PASSWORD }}" -T report.png "https://reports.garage.insolar.io/ve-perf-tests/${filename}"
       - name: List all files
         if: always()
         run: |
@@ -125,13 +132,6 @@ jobs:
           ls -la nodes-logs-aks-10node
           ls -la nodes-logs-aks-15node
           ls -la nodes-logs-aks-20node
-      - name: Send report
-        if: always()
-        run: |
-          REPORT_CSV_FILE=scaling.csv REPORT_PNG_FILE=report.png go run cmd/report/main.go
-          filename=$(date +"%F-%H-%M")-${GITHUB_SHA:0:8}.png
-          echo "::set-env name=FILE_NAME::${filename}"
-          curl -basic --user "${{ secrets.WEBDAV_USERNAME }}:${{ secrets.WEBDAV_PASSWORD }}" -T report.png "https://reports.garage.insolar.io/ve-perf-tests/${filename}"
       - name: Upload scaling.csv to artifacts
         if: always()
         uses: actions/upload-artifact@v1
