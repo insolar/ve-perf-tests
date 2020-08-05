@@ -97,7 +97,7 @@ jobs:
         run: tar --warning=no-file-changed -cvzf nodes-logs.tgz ./logs || true
       - name: Upload logs to artifacts
         if: always()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: nodes-logs-${{matrix.target}}
           path: nodes-logs.tgz
@@ -134,19 +134,19 @@ jobs:
           ls -la nodes-logs-aks-20node
       - name: Upload scaling.csv to artifacts
         if: always()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: scaling.csv
           path: scaling.csv
       - name: Upload csv to artifacts
         if: always()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: csv_report
           path: "**/*.csv"
       - name: Upload png to artifacts
         if: always()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: graph_report
           path: "**/*.png"
