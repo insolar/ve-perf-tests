@@ -119,6 +119,10 @@ jobs:
         if: always()
         run: |
           ls -la
+          ls -la nodes-logs-aks-5node
+          ls -la nodes-logs-aks-10node
+          ls -la nodes-logs-aks-15node
+          ls -la nodes-logs-aks-20node
       - name: Send report
         if: always()
         run: |
