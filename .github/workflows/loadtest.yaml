@@ -101,6 +101,18 @@ jobs:
         with:
           name: nodes-logs-${{matrix.target}}
           path: nodes-logs.tgz
+      - name: Upload csv to artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: csv_report
+          path: "**/*.csv"
+      - name: Upload png to artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: graph_report
+          path: "**/*.png"
       - name: cleanup
         if: always()
         run: kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
