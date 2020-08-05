@@ -114,6 +114,10 @@ jobs:
       - name: concatenate all csv's
         run: |
           for log in $(ls aks-*/*.csv | awk '{gsub(/[^[0-9]]*/,"");print}' | sort -n); do cat aks-"$log"node-scaling.csv/scaling.csv; done | tee scaling.csv
+      - name: List all files
+        if: always()
+        run: |
+          ls -la
       - name: Send report
         if: always()
         run: |
