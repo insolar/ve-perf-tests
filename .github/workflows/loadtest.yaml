@@ -143,13 +143,13 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: csv_report
-          path: "*.csv"
+          path: "./*.csv"
       - name: Upload png to artifacts
         if: always()
         uses: actions/upload-artifact@v1
         with:
           name: graph_report
-          path: "*.png"
+          path: "./*.png"
       - name: Send notification to Slack
         if: always()
         uses: 8398a7/action-slack@v3
