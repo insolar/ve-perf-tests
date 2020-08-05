@@ -139,11 +139,11 @@ jobs:
           name: scaling.csv
           path: scaling.csv
       - name: Upload csv to artifacts
-          if: always()
-          uses: actions/upload-artifact@v1
-          with:
-            name: csv_report
-            path: "*.csv"
+        if: always()
+        uses: actions/upload-artifact@v1
+        with:
+          name: csv_report
+          path: "*.csv"
       - name: Upload png to artifacts
         if: always()
         uses: actions/upload-artifact@v1
