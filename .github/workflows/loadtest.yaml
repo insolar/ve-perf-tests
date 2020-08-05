@@ -105,6 +105,7 @@ jobs:
   ve-perf-report:
     name: ve-perf-report
     needs: ve-perf-test
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout test
