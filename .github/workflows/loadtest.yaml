@@ -95,16 +95,29 @@ jobs:
         run: tar --warning=no-file-changed -cvzf nodes-logs.tgz ./logs || true
       - name: Upload logs to artifacts
         if: always()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: nodes-logs-${{matrix.target}}
           path: nodes-logs.tgz
+      - name: Upload csv to artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: csv_report
+          path: "**/*.csv"
+      - name: Upload png to artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: graph_report
+          path: "**/*.png"
       - name: cleanup
         if: always()
         run: kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
   ve-perf-report:
     name: ve-perf-report
     needs: ve-perf-test
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout test
@@ -123,16 +136,22 @@ jobs:
           curl -basic --user "${{ secrets.WEBDAV_USERNAME }}:${{ secrets.WEBDAV_PASSWORD }}" -T report.png "https://reports.garage.insolar.io/ve-perf-tests/${filename}"
       - name: Upload scaling.csv to artifacts
         if: always()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
           name: scaling.csv
           path: scaling.csv
-      - name: Upload report.png to artifacts
+      - name: Upload csv to artifacts
         if: always()
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         with:
-          name: report.png
-          path: report.png
+          name: csv_report
+          path: "**/*.csv"
+      - name: Upload png to artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: graph_report
+          path: "**/*.png"
       - name: Send notification to Slack
         if: always()
         uses: 8398a7/action-slack@v3
