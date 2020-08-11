@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/csv"
 	"fmt"
 	"log"
@@ -49,9 +50,9 @@ func main() {
 		Name:             "get_attack",
 		SystemMode:       loaderbot.OpenWorldSystem,
 		AttackerTimeout:  25,
-		StartRPS:         600,
-		StepDurationSec:  30,
-		StepRPS:          10,
+		StartRPS:         900,
+		StepDurationSec:  60,
+		StepRPS:          50,
 		TestTimeSec:      3600,
 		FailOnFirstError: true,
 	}
@@ -62,7 +63,7 @@ func main() {
 			Data:  wallets,
 		},
 	)
-	maxRPS, _ := lt.Run()
+	maxRPS, _ := lt.Run(context.TODO())
 	scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
 	fmt.Printf("max rps: %.2f\n", maxRPS)
 
@@ -74,9 +75,9 @@ func main() {
 		Name:             "set_attack",
 		SystemMode:       loaderbot.OpenWorldSystem,
 		AttackerTimeout:  25,
-		StartRPS:         600,
-		StepDurationSec:  30,
-		StepRPS:          10,
+		StartRPS:         900,
+		StepDurationSec:  60,
+		StepRPS:          50,
 		TestTimeSec:      3600,
 		FailOnFirstError: true,
 	}
@@ -87,7 +88,7 @@ func main() {
 			Data:  wallets,
 		},
 	)
-	maxRPS2, _ := lt2.Run()
+	maxRPS2, _ := lt2.Run(context.TODO())
 	scalingResults.Write([]string{lt2.Name, nodes, fmt.Sprintf("%.2f", maxRPS2)})
 	fmt.Printf("max rps: %.2f", maxRPS2)
 	scalingResults.Flush()

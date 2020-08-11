@@ -24,7 +24,7 @@ func (a *SetContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
 	err := util.AddAmountToWallet(a.client, url, ref, 100)
 	if err != nil {
 		return loaderbot.DoResult{
-			Error:        err,
+			Error:        err.Error(),
 			RequestLabel: a.Name,
 		}
 	}

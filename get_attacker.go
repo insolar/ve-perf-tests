@@ -2,7 +2,6 @@ package ve_perf_tests
 
 import (
 	"context"
-	"errors"
 	"net/http"
 
 	"github.com/insolar/loaderbot"
@@ -25,13 +24,13 @@ func (a *GetContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
 	balance, err := util.GetWalletBalance(a.client, url, ref)
 	if err != nil {
 		return loaderbot.DoResult{
-			Error:        err,
+			Error:        err.Error(),
 			RequestLabel: a.Name,
 		}
 	}
 	if balance != util.StartBalance {
 		return loaderbot.DoResult{
-			Error:        errors.New("balance is not equal to start balance"),
+			Error:        "balance is not equal to start balance",
 			RequestLabel: a.Name,
 		}
 	}
