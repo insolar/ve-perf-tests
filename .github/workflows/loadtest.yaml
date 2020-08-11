@@ -74,6 +74,8 @@ jobs:
         run: |
           echo 'Sadly we dont know a better way than:'
           sleep 30
+      - name: kill pulsewatcher
+        run: kubectl -n $INSOLAR_NAMESPACE delete sts/pulsar
       - name: start test
         run: |
           TARGET=http://${INSOLAR_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}') go run cmd/test/main.go
