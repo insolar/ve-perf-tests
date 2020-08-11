@@ -89,7 +89,6 @@ jobs:
         if: always()
         run: |
           mkdir -p logs/${INSOLAR_NAMESPACE}
-          kubectl -n ${INSOLAR_NAMESPACE} logs --since=12h pulsar-0 > logs/${INSOLAR_NAMESPACE}/pulsar-0.log
           for pod in $(kubectl -n $INSOLAR_NAMESPACE get po -lapp=virtual -o=custom-columns=NAME:.metadata.name --no-headers); do
             kubectl -n ${INSOLAR_NAMESPACE} logs --since=12h $pod > logs/${INSOLAR_NAMESPACE}/$pod.log
           done
