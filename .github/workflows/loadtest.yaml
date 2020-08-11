@@ -112,6 +112,12 @@ jobs:
         with:
           name: graph_report
           path: "**/*.png"
+      - name: Upload html to artifacts
+          if: always()
+          uses: actions/upload-artifact@v2
+          with:
+            name: html_report
+            path: "**/*.html"
       - name: cleanup
         if: always()
         run: kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
@@ -153,6 +159,12 @@ jobs:
         with:
           name: graph_report
           path: "**/*.png"
+      - name: Upload html to artifacts
+          if: always()
+          uses: actions/upload-artifact@v2
+          with:
+            name: html_report
+            path: "**/*.html"
       - name: Send notification to Slack
         if: always()
         uses: 8398a7/action-slack@v3
