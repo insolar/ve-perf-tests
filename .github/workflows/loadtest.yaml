@@ -91,6 +91,9 @@ jobs:
           for pod in $(kubectl -n $INSOLAR_NAMESPACE get po -lapp=virtual -o=custom-columns=NAME:.metadata.name --no-headers); do
             kubectl -n ${INSOLAR_NAMESPACE} logs --since=12h $pod > logs/${INSOLAR_NAMESPACE}/$pod.log
           done
+      - name: create stats from logs
+        run: |
+          go run scripts/log_filter/*.go logs/${INSOLAR_NAMESPACE} --machine-stats machine_stats.csv --message-stats message_stats.csv
       - name: Aggregate logs into a single archive
         if: always()
         run: tar --warning=no-file-changed -cvzf nodes-logs.tgz ./logs || true
