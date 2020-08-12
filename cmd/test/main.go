@@ -52,7 +52,7 @@ func main() {
 		AttackerTimeout:  25,
 		StartRPS:         600,
 		StepDurationSec:  30,
-		StepRPS:          10,
+		StepRPS:          50,
 		TestTimeSec:      3600,
 		FailOnFirstError: true,
 	}
@@ -78,7 +78,7 @@ func main() {
 		AttackerTimeout:  25,
 		StartRPS:         600,
 		StepDurationSec:  30,
-		StepRPS:          10,
+		StepRPS:          50,
 		TestTimeSec:      3600,
 		FailOnFirstError: true,
 	}
