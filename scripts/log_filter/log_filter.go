@@ -84,53 +84,60 @@ func filterLogs(_ *cobra.Command, args []string) {
 
 	writeMessageHeader(messageStatsWriter)
 
-	machineStats := make([]MachineStat, 0)
-	messagesStats := make([]MessageStat, 0)
-
 	for _, fileInfo := range files {
-		machineSt, messageSt, err := processFile(fmt.Sprintf("%s/%s", dir, fileInfo.Name()), machineStatsWriter, messageStatsWriter)
+		err := processFile(dir, fileInfo.Name(), machineStatsWriter, messageStatsWriter)
 		if err != nil {
 			panic(throw.W(err, "failed to read file", struct{ File string }{File: fileInfo.Name()}))
 		}
-		if machineSt != nil {
-			machineStats = append(machineStats, machineSt...)
-		}
-		if messageSt != nil {
-			messagesStats = append(messagesStats, messageSt...)
-		}
+	}
+	machineStatsWriter.Flush()
+	messageStatsWriter.Flush()
+
+	if err = machineStatsWriter.Error(); err != nil {
+		panic(throw.W(err, "failed to write machine stats csv"))
+	}
+
+	if err = messageStatsWriter.Error(); err != nil {
+		panic(throw.W(err, "failed to write messages stats csv"))
 	}
 }
 
-func processFile(path string, machineStateWriter, messageStatWriter *csv.Writer) ([]MachineStat, []MessageStat, error) {
-	file, err := os.Open(path)
+func processFile(dir, fileName string, machineStatsWriter, messageStatsWriter *csv.Writer) error {
+	file, err := os.Open(fmt.Sprintf("%s/%s", dir, fileName))
 	if err != nil {
-		return nil, nil, err
+		return err
 	}
 	defer file.Close()
-
-	machineStats := make([]MachineStat, 0)
-	messagesStats := make([]MessageStat, 0)
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		machineStat, messageStat, err := parseLine(scanner.Bytes())
 		if err != nil {
-			return nil, nil, err
+			return err
 		}
 		if machineStat.Match() {
-			machineStateWriter.Write(machineStat.ToCSVLine())
-			machineStats = append(machineStats, machineStat)
+			machineStat.Node = fileName
+			machineStatsWriter.Write(machineStat.ToCSVLine())
 		}
 		if messageStat.Match() {
-			messageStatWriter.Write(messageStat.ToCSVLine())
+			messageStat.Node = fileName
+			messageStatsWriter.Write(messageStat.ToCSVLine())
 		}
 	}
 
 	if err := scanner.Err(); err != nil {
-		return nil, nil, err
+		return err
 	}
 
-	return machineStats, messagesStats, nil
+	if err = machineStatsWriter.Error(); err != nil {
+		panic(throw.W(err, "failed to write machine stats csv"))
+	}
+
+	if err = messageStatsWriter.Error(); err != nil {
+		panic(throw.W(err, "failed to write messages stats csv"))
+	}
+
+	return nil
 }
 
 func parseLine(data []byte) (MachineStat, MessageStat, error) {
@@ -148,14 +155,14 @@ func parseLine(data []byte) (MachineStat, MessageStat, error) {
 }
 
 func writeMachineHeader(writer *csv.Writer) {
-	err := writer.Write([]string{"Node", "MachineID", "CycleNo", "SlotID", "SlotStepNo", "CurrentStep", "Declaration", "ExecutionTime", "InactivityTime", "time", "message"})
+	err := writer.Write(MachineStat{}.CSVHeader())
 	if err != nil {
 		panic(throw.W(err, "failed to write machine stats header"))
 	}
 }
 
 func writeMessageHeader(writer *csv.Writer) {
-	err := writer.Write([]string{"Node", "Source", "Target", "PayloadType", "time"})
+	err := writer.Write(MessageStat{}.CSVHeader())
 	if err != nil {
 		panic(throw.W(err, "failed to write machine stats header"))
 	}

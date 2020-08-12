@@ -28,9 +28,13 @@ func (m MachineStat) Match() bool {
 	return m.CycleNo != 0 && m.Declaration != ""
 }
 
+func (m MachineStat) CSVHeader() []string {
+	return []string{"Node", "MachineID", "CycleNo", "SlotID", "SlotStepNo", "CurrentStep", "Declaration", "ExecutionTime", "InactivityTime", "time", "message"}
+}
+
 func (m MachineStat) ToCSVLine() []string {
 	return []string{m.Node, m.MachineID, strconv.Itoa(m.CycleNo), strconv.Itoa(m.SlotID), strconv.Itoa(m.SlotStepNo),
-		m.CurrentStep, m.Declaration, strconv.Itoa(m.ExecutionTime), strconv.Itoa(m.InactivityTime), m.Time}
+		m.CurrentStep, m.Declaration, strconv.Itoa(m.ExecutionTime), strconv.Itoa(m.InactivityTime), m.Time, m.Message}
 }
 
 // Source, Target, PayloadType, time
@@ -45,6 +49,10 @@ type MessageStat struct {
 
 func (m MessageStat) Match() bool {
 	return m.Message == "processing message"
+}
+
+func (m MessageStat) CSVHeader() []string {
+	return []string{"Node", "Source", "Target", "PayloadType", "time"}
 }
 
 func (m MessageStat) ToCSVLine() []string {
