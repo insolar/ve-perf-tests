@@ -114,7 +114,9 @@ jobs:
           path: "**/*.png"
       - name: cleanup
         if: always()
-        run: kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
+        run: |
+          cat deploy/kube/gitops/uscifarm-ingressroute.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl delete -f -
+          kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
   ve-perf-report:
     name: ve-perf-report
     needs: ve-perf-test
