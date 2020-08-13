@@ -65,7 +65,7 @@ jobs:
           kubectl kustomize deploy/kube/gitops/"$INSOLAR_NETWORK_SIZE" | envsubst '${INSOLAR_NAMESPACE} ${INSOLAR_TAG}' | kubectl -n $INSOLAR_NAMESPACE apply -f -
           cat deploy/kube/gitops/uscifarm-ingressroute.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl apply -f -
       - name: Rollout check (IF THIS STEP FAILED - CALL DEV/OPS, YELLOW ALERT)
-        run: kubectl -n $INSOLAR_NAMESPACE rollout status sts/virtual --timeout=300s
+        run: kubectl -n $INSOLAR_NAMESPACE rollout status sts/virtual --timeout=10m
       - name: Provide link to grafana
         run:  echo "https://monitoring.uscifarm.insolar.io/d/LmD-fXFZz/ins-network?orgId=1&refresh=10s&var-phase=All&var-packetType=All&var-namespace=$INSOLAR_NAMESPACE&from=now-10m&to=now"
       - name: Set network start time variable
