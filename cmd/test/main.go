@@ -24,15 +24,14 @@ func main() {
 	if scalingCSVFileName == "" {
 		log.Fatal("env variable REPORT_CSV_FILE must be set, ex.: scaling.csv")
 	}
-	walletsAmount := os.Getenv("WALLETS")
-	if walletsAmount == "" {
-		log.Fatal("env variable WALLETS must be set")
-	}
 	nodes := os.Getenv("NODES")
 	if nodes == "" {
 		log.Fatal("env variable NODES must be set")
 	}
-	wAmount, _ := strconv.Atoi(walletsAmount)
+
+	nodeAmount, _ := strconv.Atoi(nodes)
+
+	wAmount := nodeAmount
 
 	wallets, err := util.CreateWallets(target, wAmount)
 	if err != nil {
@@ -47,7 +46,8 @@ func main() {
 	cfg := &loaderbot.RunnerConfig{
 		TargetUrl:        target,
 		Name:             "get_attack",
-		SystemMode:       loaderbot.OpenWorldSystem,
+		SystemMode:       loaderbot.PrivateSystem,
+		Attackers:        1000,
 		AttackerTimeout:  25,
 		StartRPS:         600,
 		StepDurationSec:  30,
@@ -72,7 +72,8 @@ func main() {
 	cfg2 := &loaderbot.RunnerConfig{
 		TargetUrl:        target,
 		Name:             "set_attack",
-		SystemMode:       loaderbot.OpenWorldSystem,
+		SystemMode:       loaderbot.PrivateSystem,
+		Attackers:        1000,
 		AttackerTimeout:  25,
 		StartRPS:         600,
 		StepDurationSec:  30,
