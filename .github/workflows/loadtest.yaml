@@ -87,9 +87,9 @@ jobs:
         if: always()
         run: |
           mkdir -p logs/${INSOLAR_NAMESPACE}
-          curl -G -s -u "$PROMETHEUS_USER:$PROMETHEUS_PASS" "https://loki.uscifarm.insolar.io/loki/api/v1/query_range" --data-urlencode 'query={namespace="'$INSOLAR_NAMESPACE'", pod="pulsar-0"}' --data-urlencode 'query_type=filter' --data-urlencode 'range_type=range' --data-urlencode 'length=215m1s' --data-urlencode 'step=1s' --data-urlencode 'limit=5000000' > logs/${INSOLAR_NAMESPACE}/pulsar-0.log
+          curl -G -s -u "$PROMETHEUS_USER:$PROMETHEUS_PASS" "https://loki.uscifarm.insolar.io/loki/api/v1/query_range" --data-urlencode 'query={namespace="'$INSOLAR_NAMESPACE'", pod="pulsar-0"}' --data-urlencode 'query_type=filter' --data-urlencode 'range_type=range' --data-urlencode 'length=215m1s' --data-urlencode 'step=1s' --data-urlencode 'limit=5000000' | jq '.data.result[].values[] | join(",")' | cut -d ',' -f2- > logs/${INSOLAR_NAMESPACE}/pulsar-0.log
           for pod in $(kubectl -n $INSOLAR_NAMESPACE get po -lapp=virtual -o=custom-columns=NAME:.metadata.name --no-headers); do
-            curl -G -s -u "$PROMETHEUS_USER:$PROMETHEUS_PASS" "https://loki.uscifarm.insolar.io/loki/api/v1/query_range" --data-urlencode 'query={namespace="'$INSOLAR_NAMESPACE'", pod="'$pod'"}' --data-urlencode 'query_type=filter' --data-urlencode 'range_type=range' --data-urlencode 'length=215m1s' --data-urlencode 'step=1s' --data-urlencode 'limit=5000000' > logs/${INSOLAR_NAMESPACE}/$pod.log
+            curl -G -s -u "$PROMETHEUS_USER:$PROMETHEUS_PASS" "https://loki.uscifarm.insolar.io/loki/api/v1/query_range" --data-urlencode 'query={namespace="'$INSOLAR_NAMESPACE'", pod="'$pod'"}' --data-urlencode 'query_type=filter' --data-urlencode 'range_type=range' --data-urlencode 'length=215m1s' --data-urlencode 'step=1s' --data-urlencode 'limit=5000000' | jq '.data.result[].values[] | join(",")' | cut -d ',' -f2- > logs/${INSOLAR_NAMESPACE}/$pod.log
           done
       - name: create stats from logs
         run: |
