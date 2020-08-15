@@ -31,7 +31,7 @@ func main() {
 
 	nodeAmount, _ := strconv.Atoi(nodes)
 
-	wAmount := nodeAmount
+	wAmount := nodeAmount * 1000
 
 	wallets, err := util.CreateWallets(target, wAmount)
 	if err != nil {
