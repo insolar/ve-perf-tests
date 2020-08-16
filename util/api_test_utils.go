@@ -60,8 +60,15 @@ func DoReq(client *http.Client, req *http.Request) ([]byte, error) {
 	}
 
 	defer postResp.Body.Close()
+
 	if http.StatusOK != postResp.StatusCode {
-		return nil, errors.New("bad http response", postResp)
+		return nil, errors.New("bad http response", struct {
+			StatusCode   int
+			StatusString string
+		}{
+			StatusCode:   postResp.StatusCode,
+			StatusString: postResp.Status,
+		})
 	}
 
 	body, err := ioutil.ReadAll(postResp.Body)
