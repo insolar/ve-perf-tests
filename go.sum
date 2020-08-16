@@ -192,6 +192,7 @@ github.com/insolar/loaderbot v0.0.16 h1:jsD6tAiJfwAXrP7C80cxWJbypJGTIOz2/NWwrpsj
 github.com/insolar/loaderbot v0.0.16/go.mod h1:2gHWbBPZJOa6KrVhDiiRnzeggrfjce9COFC/d+PVq1U=
 github.com/insolar/loaderbot v0.0.17 h1:BgqkV1pQZp3j4zBcPT4nV/Xq53fSHXYDg94+NMKeU0o=
 github.com/insolar/loaderbot v0.0.17/go.mod h1:2gHWbBPZJOa6KrVhDiiRnzeggrfjce9COFC/d+PVq1U=
+github.com/insolar/loaderbot v0.0.21/go.mod h1:2gHWbBPZJOa6KrVhDiiRnzeggrfjce9COFC/d+PVq1U=
 github.com/insolar/loaderbot v0.0.22 h1:oNolQLn4lW7p4m0E2xsfz6L1Lpj6IsguxXqQEAp5TAE=
 github.com/insolar/loaderbot v0.0.22/go.mod h1:2gHWbBPZJOa6KrVhDiiRnzeggrfjce9COFC/d+PVq1U=
 github.com/insolar/rpc v1.2.2-0.20190812143745-c27e1d218f1f/go.mod h1:BZcTsPtQu8QG8RqqQdAnuNAG8n6TOrdNxIHro0h99Ik=

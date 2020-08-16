@@ -8,7 +8,7 @@ import (
 
 func CreateWallets(url string, amount int) ([]string, error) {
 	fmt.Printf("Generating %d wallets\n", amount)
-	client := loaderbot.NewLoggingHTTPClient(false, 10)
+	client := loaderbot.NewLoggingHTTPClient(true, 30)
 	wallets := make([]string, 0)
 	for i := 0; i < amount; i++ {
 		fmt.Printf("creating wallet #%d\n", i)
