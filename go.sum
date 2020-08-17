@@ -101,6 +101,7 @@ github.com/gojuno/minimock/v3 v3.0.4/go.mod h1:HqeqnwV8mAABn3pO5hqF+RE7gjA0jsN8c
 github.com/gojuno/minimock/v3 v3.0.6/go.mod h1:v61ZjAKHr+WnEkND63nQPCZ/DTfQgJdvbCi3IuoMblY=
 github.com/gojuno/minimock/v3 v3.0.8 h1:+L+WvGoTvPB4YCbkMI5WFyp3Mvz6Z5ubBuTXWMhmwmA=
 github.com/gojuno/minimock/v3 v3.0.8/go.mod h1:TPKxc8tiB8O83YH2//pOzxvEjaI3TMhd6ev/GmlMiYA=
+github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 h1:DACJavvAHhabrF08vX0COfcOBJRhZ8lUbR+ZWIs0Y5g=
 github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0/go.mod h1:E/TSTwGwJL78qG/PmXZO1EjYhfJinVAhrmmHX6Z8B9k=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/groupcache v0.0.0-20190129154638-5b532d6fd5ef/go.mod h1:cIg4eruTrX1D+g88fzRXU5OdNfaM+9IcxsU14FzY7Hc=
@@ -197,6 +198,8 @@ github.com/insolar/loaderbot v0.0.22 h1:oNolQLn4lW7p4m0E2xsfz6L1Lpj6IsguxXqQEAp5
 github.com/insolar/loaderbot v0.0.22/go.mod h1:2gHWbBPZJOa6KrVhDiiRnzeggrfjce9COFC/d+PVq1U=
 github.com/insolar/loaderbot v0.0.23 h1:n0RErR40M/5jHFF/TlOQcE0yhqoUlhGCDJfyN+LFkSw=
 github.com/insolar/loaderbot v0.0.23/go.mod h1:2gHWbBPZJOa6KrVhDiiRnzeggrfjce9COFC/d+PVq1U=
+github.com/insolar/loaderbot v0.0.24 h1:yUpBg7YodJqf8w1SR+w+1nST3vsQw0lEH1WoPX9oONk=
+github.com/insolar/loaderbot v0.0.24/go.mod h1:2gHWbBPZJOa6KrVhDiiRnzeggrfjce9COFC/d+PVq1U=
 github.com/insolar/rpc v1.2.2-0.20190812143745-c27e1d218f1f/go.mod h1:BZcTsPtQu8QG8RqqQdAnuNAG8n6TOrdNxIHro0h99Ik=
 github.com/insolar/sm-uml-gen v1.0.0/go.mod h1:+Er0DZTt3vLlmzlZuwnxUqRm81WyfwPXsuZ5e9rZc8w=
 github.com/insolar/x-crypto v0.0.0-20191031140942-75fab8a325f6 h1:WS4a7qw+P1pcnviyxyMTA/aR+T51wJok1IC9rJkHrTg=
@@ -381,6 +384,7 @@ github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8 h1:3SVOIvH7Ae1KRYy
 github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=
 github.com/ugorji/go/codec v0.0.0-20190204201341-e444a5086c43 h1:BasDe+IErOQKrMVXab7UayvSlIpiyGwRvuX3EKYY7UA=
 github.com/ugorji/go/codec v0.0.0-20190204201341-e444a5086c43/go.mod h1:iT03XoTwV7xq/+UGwKO3UbC1nNNlopQiY61beSdrtOA=
+github.com/wcharczuk/go-chart v2.0.2-0.20191206192251-962b9abdec2b+incompatible h1:ahpaSRefPekV3gcXot2AOgngIV8WYqzvDyFe3i7W24w=
 github.com/wcharczuk/go-chart v2.0.2-0.20191206192251-962b9abdec2b+incompatible/go.mod h1:PF5tmL4EIx/7Wf+hEkpCqYi5He4u90sw+0+6FhrryuE=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
 github.com/xlab/treeprint v0.0.0-20180616005107-d6fb6747feb6/go.mod h1:ce1O1j6UtZfjr22oyGxGLbauSBp2YVXpARAosm7dHBg=
@@ -423,6 +427,7 @@ golang.org/x/exp v0.0.0-20190829153037-c13cbed26979/go.mod h1:86+5VVa7VpoJ4kLfm0
 golang.org/x/exp v0.0.0-20191030013958-a1ab85dbe136/go.mod h1:JXzH8nQsPlswgeRAPE3MuO9GYsAcnJvJ4vnMwN/5qkY=
 golang.org/x/image v0.0.0-20190227222117-0694c2d4d067/go.mod h1:kZ7UVZpmo3dzQBMxlp+ypCbDeSB+sBbTgSJuh5dn5js=
 golang.org/x/image v0.0.0-20190802002840-cff245a6509b/go.mod h1:FeLwcggjj3mMvU+oOTbSwawSJRM1uh48EjtB4UJZlP0=
+golang.org/x/image v0.0.0-20200618115811-c13761719519 h1:1e2ufUJNM3lCHEY5jIgac/7UTjd6cgJNdatjPdFWf34=
 golang.org/x/image v0.0.0-20200618115811-c13761719519/go.mod h1:FeLwcggjj3mMvU+oOTbSwawSJRM1uh48EjtB4UJZlP0=
 golang.org/x/lint v0.0.0-20181026193005-c67002cb31c3/go.mod h1:UVdnD1Gm6xHRNCYTkRU2/jEulfH38KcIWyp/GAMgvoE=
 golang.org/x/lint v0.0.0-20190227174305-5b3e6a55c961/go.mod h1:wehouNa3lNwaWXcvxsM5YxQ5yQlVC4a0KAMCusXpPoU=

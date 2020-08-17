@@ -16,5 +16,5 @@ func main() {
 	if scalingCSVFileName == "" {
 		log.Fatal("env variable REPORT_PNG_FILE must be set, ex.: report.png")
 	}
-	loaderbot.ReportScaling(scalingCSVFileName, scalingPNGFileName)
+	loaderbot.ReportScalingSlack(scalingCSVFileName, scalingPNGFileName)
 }
