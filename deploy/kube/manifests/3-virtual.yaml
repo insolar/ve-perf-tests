@@ -40,7 +40,8 @@ spec:
               path: /healtcheck
               port: public-api
             initialDelaySeconds: 60
-            periodSeconds: 3
+            periodSeconds: 10
+            failureThreshold: 30
           imagePullPolicy: IfNotPresent
           command: ["insolard"]
           args: [
