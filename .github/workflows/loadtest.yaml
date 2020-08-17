@@ -73,7 +73,7 @@ jobs:
       - name: wait until uscifarm.insolar.io is ready
         run: |
           echo 'Sadly we dont know a better way than:'
-          sleep 30
+          sleep 60
       - name: start test
         run: |
           TARGET=http://${INSOLAR_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}') go run cmd/test/main.go

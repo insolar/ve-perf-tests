@@ -12,7 +12,8 @@ func CreateWallets(url string, amount int) ([]string, error) {
 	client := loaderbot.NewLoggingHTTPClient(false, 60)
 	wallets := make([]string, 0)
 	for i := 0; i < amount; i++ {
-		time.Sleep(50 * time.Millisecond)
+		fmt.Printf("creating wallet #%d\n", i)
+		time.Sleep(100 * time.Millisecond)
 		ref, err := CreateSimpleWallet(client, url+"/wallet/create")
 		if err != nil {
 			return nil, err
