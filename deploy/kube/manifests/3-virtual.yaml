@@ -35,11 +35,11 @@ spec:
         - name: insolar
           # todo change to specific tag
           image: insolar/assured-ledger:latest
-          readinessProbe:
+          startupProbe:
             httpGet:
               path: /healtcheck
               port: public-api
-            initialDelaySeconds: 60
+            initialDelaySeconds: 10
             periodSeconds: 10
             failureThreshold: 30
           imagePullPolicy: IfNotPresent
