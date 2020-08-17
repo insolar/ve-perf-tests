@@ -35,11 +35,17 @@ spec:
         - name: insolar
           # todo change to specific tag
           image: insolar/assured-ledger:latest
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: liveness-port
+            failureThreshold: 30
+            periodSeconds: 100
           livenessProbe:
             httpGet:
               path: /healtcheck
               port: 19101
-            initialDelaySeconds: 60
+            failureThreshold: 1
             periodSeconds: 3
           imagePullPolicy: IfNotPresent
           command: ["insolard"]
