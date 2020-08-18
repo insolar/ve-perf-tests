@@ -73,7 +73,7 @@ jobs:
       - name: wait until uscifarm.insolar.io is ready
         run: |
           echo 'Sadly we dont know a better way than:'
-          sleep 30
+          sleep 60
       - name: start test
         run: |
           TARGET=http://${INSOLAR_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}') go run cmd/test/main.go
@@ -115,6 +115,12 @@ jobs:
         with:
           name: graph_report
           path: "**/*.png"
+      - name: Upload html to artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: html_report
+          path: "**/*.html"
       - name: cleanup
         if: always()
         run: |
@@ -158,6 +164,12 @@ jobs:
         with:
           name: graph_report
           path: "**/*.png"
+      - name: Upload html to artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: html_report
+          path: "**/*.html"
       - name: Send notification to Slack
         if: always()
         uses: 8398a7/action-slack@v3
