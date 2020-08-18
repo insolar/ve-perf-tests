@@ -7,6 +7,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/csv"
 	"fmt"
 	"io/ioutil"
@@ -145,6 +146,17 @@ func parseLine(data []byte) (MachineStat, MessageStat, error) {
 		machineStat MachineStat
 		messageStat MessageStat
 	)
+
+	// if it is not valid json, then there is no point of trying to extract anything
+	// but it is possible that json was doublequoted, so we try replace some bad characters and retry
+	// strconv.Unquote doesn't handle these strings
+	if !jsoniter.Valid(data) {
+		data = bytes.ReplaceAll(data, []byte(`\"`), []byte(`"`))
+		data = bytes.ReplaceAll(data, []byte(`\n`), []byte(``))
+		if !jsoniter.Valid(data) {
+			return machineStat, messageStat, nil
+		}
+	}
 
 	// skip errors, because logs can have non json parts
 	_ = jsonAPI.Unmarshal(data, &machineStat)
