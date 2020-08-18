@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/csv"
 	"fmt"
 	"log"
@@ -24,10 +25,13 @@ func main() {
 	if scalingCSVFileName == "" {
 		log.Fatal("env variable REPORT_CSV_FILE must be set, ex.: scaling.csv")
 	}
+
 	walletsAmount := os.Getenv("WALLETS")
+
 	if walletsAmount == "" {
 		log.Fatal("env variable WALLETS must be set")
 	}
+
 	nodes := os.Getenv("NODES")
 	if nodes == "" {
 		log.Fatal("env variable NODES must be set")
@@ -51,7 +55,7 @@ func main() {
 		AttackerTimeout:  25,
 		StartRPS:         600,
 		StepDurationSec:  30,
-		StepRPS:          10,
+		StepRPS:          50,
 		TestTimeSec:      3600,
 		FailOnFirstError: true,
 	}
@@ -62,7 +66,7 @@ func main() {
 			Data:  wallets,
 		},
 	)
-	maxRPS, _ := lt.Run()
+	maxRPS, _ := lt.Run(context.TODO())
 	scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
 	fmt.Printf("max rps: %.2f\n", maxRPS)
 
@@ -76,7 +80,7 @@ func main() {
 		AttackerTimeout:  25,
 		StartRPS:         600,
 		StepDurationSec:  30,
-		StepRPS:          10,
+		StepRPS:          50,
 		TestTimeSec:      3600,
 		FailOnFirstError: true,
 	}
@@ -87,7 +91,7 @@ func main() {
 			Data:  wallets,
 		},
 	)
-	maxRPS2, _ := lt2.Run()
+	maxRPS2, _ := lt2.Run(context.TODO())
 	scalingResults.Write([]string{lt2.Name, nodes, fmt.Sprintf("%.2f", maxRPS2)})
 	fmt.Printf("max rps: %.2f", maxRPS2)
 	scalingResults.Flush()

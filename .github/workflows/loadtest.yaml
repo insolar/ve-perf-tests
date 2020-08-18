@@ -65,7 +65,7 @@ jobs:
           kubectl kustomize deploy/kube/gitops/"$INSOLAR_NETWORK_SIZE" | envsubst '${INSOLAR_NAMESPACE} ${INSOLAR_TAG}' | kubectl -n $INSOLAR_NAMESPACE apply -f -
           cat deploy/kube/gitops/uscifarm-ingressroute.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl apply -f -
       - name: Rollout check (IF THIS STEP FAILED - CALL DEV/OPS, YELLOW ALERT)
-        run: kubectl -n $INSOLAR_NAMESPACE rollout status sts/virtual --timeout=300s
+        run: kubectl -n $INSOLAR_NAMESPACE rollout status sts/virtual --timeout=10m
       - name: Provide link to grafana
         run:  echo "https://monitoring.uscifarm.insolar.io/d/LmD-fXFZz/ins-network?orgId=1&refresh=10s&var-phase=All&var-packetType=All&var-namespace=$INSOLAR_NAMESPACE&from=now-10m&to=now"
       - name: Set network start time variable
@@ -73,7 +73,7 @@ jobs:
       - name: wait until uscifarm.insolar.io is ready
         run: |
           echo 'Sadly we dont know a better way than:'
-          sleep 30
+          sleep 60
       - name: kill pulsar
         run: kubectl -n $INSOLAR_NAMESPACE delete sts/pulsar
       - name: start test
@@ -89,9 +89,13 @@ jobs:
         if: always()
         run: |
           mkdir -p logs/${INSOLAR_NAMESPACE}
+          curl -G -s -u "$PROMETHEUS_USER:$PROMETHEUS_PASS" "https://loki.uscifarm.insolar.io/loki/api/v1/query_range" --data-urlencode 'query={namespace="'$INSOLAR_NAMESPACE'", pod="pulsar-0"}' --data-urlencode 'query_type=filter' --data-urlencode 'range_type=range' --data-urlencode 'length=215m1s' --data-urlencode 'step=1s' --data-urlencode 'limit=5000000' | jq '.data.result[].values[] | join(",")' | cut -d ',' -f2- > logs/${INSOLAR_NAMESPACE}/pulsar-0.log
           for pod in $(kubectl -n $INSOLAR_NAMESPACE get po -lapp=virtual -o=custom-columns=NAME:.metadata.name --no-headers); do
-            kubectl -n ${INSOLAR_NAMESPACE} logs --since=12h $pod > logs/${INSOLAR_NAMESPACE}/$pod.log
+            curl -G -s -u "$PROMETHEUS_USER:$PROMETHEUS_PASS" "https://loki.uscifarm.insolar.io/loki/api/v1/query_range" --data-urlencode 'query={namespace="'$INSOLAR_NAMESPACE'", pod="'$pod'"}' --data-urlencode 'query_type=filter' --data-urlencode 'range_type=range' --data-urlencode 'length=215m1s' --data-urlencode 'step=1s' --data-urlencode 'limit=5000000' | jq '.data.result[].values[] | join(",")' | cut -d ',' -f2- > logs/${INSOLAR_NAMESPACE}/$pod.log
           done
+      - name: create stats from logs
+        run: |
+          go run scripts/log_filter/*.go logs/${INSOLAR_NAMESPACE} --machine-stats machine_stats_${INSOLAR_NETWORK_SIZE}.csv --message-stats message_stats_${INSOLAR_NETWORK_SIZE}.csv
       - name: Aggregate logs into a single archive
         if: always()
         run: tar --warning=no-file-changed -cvzf nodes-logs.tgz ./logs || true
@@ -113,9 +117,17 @@ jobs:
         with:
           name: graph_report
           path: "**/*.png"
+      - name: Upload html to artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: html_report
+          path: "**/*.html"
       - name: cleanup
         if: always()
-        run: kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
+        run: |
+          cat deploy/kube/gitops/uscifarm-ingressroute.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl delete -f -
+          kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
   ve-perf-report:
     name: ve-perf-report
     needs: ve-perf-test
@@ -154,6 +166,12 @@ jobs:
         with:
           name: graph_report
           path: "**/*.png"
+      - name: Upload html to artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: html_report
+          path: "**/*.html"
       - name: Send notification to Slack
         if: always()
         uses: 8398a7/action-slack@v3
