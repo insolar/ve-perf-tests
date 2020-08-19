@@ -3,6 +3,7 @@ module github.com/insolar/ve-perf-tests
 go 1.14
 
 require (
+	github.com/blend/go-sdk v1.1.1 // indirect
 	github.com/gojuno/minimock/v3 v3.0.8 // indirect
 	github.com/insolar/assured-ledger/ledger-core v0.0.0-20200811095133-eb75ba92a497
 	github.com/insolar/consensus-reports v0.0.0-20200515131339-fea7a784f1d6
