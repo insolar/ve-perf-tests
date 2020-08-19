@@ -99,9 +99,9 @@ jobs:
         if: always()
         run: |
           mkdir -p logs/${INSOLAR_NAMESPACE}
-          logcli --addr="$LOKI_URL" query '{namespace="'$INSOLAR_NAMESPACE'", pod="pulsar-0"}' --no-labels -q --since=32h --limit=5000000 --output=raw --forward > logs/${INSOLAR_NAMESPACE}/pulsar-0.log
+          logcli --addr="$LOKI_URL" query '{namespace="'$INSOLAR_NAMESPACE'", pod="pulsar-0"}' --no-labels -q --since=32h --limit=5000000 --output=raw --forward --batch=1000000 > logs/${INSOLAR_NAMESPACE}/pulsar-0.log
           for pod in $(kubectl -n $INSOLAR_NAMESPACE get po -lapp=virtual -o=custom-columns=NAME:.metadata.name --no-headers); do
-            logcli --addr="$LOKI_URL" query '{namespace="'$INSOLAR_NAMESPACE'", pod="'$pod'"}' --no-labels -q --since=32h --limit=5000000 --output=raw --forward > logs/${INSOLAR_NAMESPACE}/"$pod".log
+            logcli --addr="$LOKI_URL" query '{namespace="'$INSOLAR_NAMESPACE'", pod="'$pod'"}' --no-labels -q --since=32h --limit=5000000 --output=raw --forward --batch=1000000 > logs/${INSOLAR_NAMESPACE}/"$pod".log
           done
       - name: create stats from logs
         run: |
