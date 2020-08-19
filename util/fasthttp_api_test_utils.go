@@ -18,7 +18,10 @@ func GetWalletBalanceFast(client *loaderbot.FastHTTPClient, url, ref string) (ui
 	req.SetRequestURI(url)
 	b, _ := json.Marshal(WalletGetBalanceRequestBody{Ref: ref})
 	req.SetBody(b)
-	_, body, err := client.Do(req)
+	status, body, err := client.Do(req)
+	if status >= 400 {
+		return 0, errors.New("status: %d", status)
+	}
 	if err != nil {
 		return 0, errors.W(err, "failed to send request or get response body")
 	}
@@ -38,7 +41,10 @@ func AddAmountToWalletFast(client *loaderbot.FastHTTPClient, url, ref string, am
 	req.SetRequestURI(url)
 	b, _ := json.Marshal(WalletAddAmountRequestBody{To: ref, Amount: amount})
 	req.SetBody(b)
-	_, body, err := client.Do(req)
+	status, body, err := client.Do(req)
+	if status >= 400 {
+		return errors.New("status: %d", status)
+	}
 	if err != nil {
 		return errors.W(err, "failed to send request or get response body")
 	}
