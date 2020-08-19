@@ -18,22 +18,18 @@ func GetWalletBalanceFast(client *loaderbot.FastHTTPClient, url, ref string) (ui
 	req.SetRequestURI(url)
 	b, _ := json.Marshal(WalletGetBalanceRequestBody{Ref: ref})
 	req.SetBody(b)
-	status, body, err := client.Do(req)
+	status, resp, err := client.Do(req, &WalletGetBalanceResponse{})
+	res := resp.(*WalletGetBalanceResponse)
 	if status >= 400 {
 		return 0, errors.New("status: %d", status)
 	}
 	if err != nil {
 		return 0, errors.W(err, "failed to send request or get response body")
 	}
-
-	resp, err := UnmarshalWalletGetBalanceResponse(body)
-	if err != nil {
-		return 0, errors.W(err, "failed to unmarshal response")
+	if res.Err != "" {
+		return 0, fmt.Errorf("problem during execute request: %s", res.Err)
 	}
-	if resp.Err != "" {
-		return 0, fmt.Errorf("problem during execute request: %s", resp.Err)
-	}
-	return resp.Amount, nil
+	return res.Amount, nil
 }
 
 func AddAmountToWalletFast(client *loaderbot.FastHTTPClient, url, ref string, amount uint) error {
@@ -41,19 +37,16 @@ func AddAmountToWalletFast(client *loaderbot.FastHTTPClient, url, ref string, am
 	req.SetRequestURI(url)
 	b, _ := json.Marshal(WalletAddAmountRequestBody{To: ref, Amount: amount})
 	req.SetBody(b)
-	status, body, err := client.Do(req)
+	status, resp, err := client.Do(req, &WalletAddAmountResponse{})
+	res := resp.(*WalletAddAmountResponse)
 	if status >= 400 {
 		return errors.New("status: %d", status)
 	}
 	if err != nil {
 		return errors.W(err, "failed to send request or get response body")
 	}
-	resp, err := unmarshalWalletAddAmountResponse(body)
-	if err != nil {
-		return errors.W(err, "failed to unmarshal response")
-	}
-	if resp.Err != "" {
-		return fmt.Errorf("problem during execute request: %s", resp.Err)
+	if res.Err != "" {
+		return fmt.Errorf("problem during execute request: %s", res.Err)
 	}
 	return nil
 }
