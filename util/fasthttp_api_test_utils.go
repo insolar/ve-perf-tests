@@ -32,7 +32,7 @@ func GetWalletBalanceFast(client *loaderbot.FastHTTPClient, url, ref string) (ui
 		}
 		return res.Amount, nil
 	}
-	return -1, nil
+	return 0, nil
 }
 
 func AddAmountToWalletFast(client *loaderbot.FastHTTPClient, url, ref string, amount uint) error {
