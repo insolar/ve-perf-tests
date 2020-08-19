@@ -17,7 +17,8 @@ import (
 
 type EchoContractTestAttack struct {
 	*loaderbot.Runner
-	client *http.Client
+	client  *http.Client
+	echoRef string
 }
 
 func (a *EchoContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
@@ -26,7 +27,7 @@ func (a *EchoContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
 }
 func (a *EchoContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
 	url := a.Cfg.TargetUrl + util.WalletGetBalancePath
-	balance, err := util.GetWalletBalance(a.client, url, statemachine.BuiltinTestAPIEchoRef)
+	balance, err := util.GetWalletBalance(a.client, url, statemachine.BuiltinTestAPIEcho)
 	if err != nil {
 		return loaderbot.DoResult{
 			Error:        err.Error(),
