@@ -90,7 +90,7 @@ func processFile(dir, fileName string) error {
 	}
 	defer file.Close()
 
-	machineStatsFile, err := os.Create(fmt.Sprintf("%s/%s", machineStateOutput, fileName))
+	machineStatsFile, err := os.Create(fmt.Sprintf("%s/%s.csv", machineStateOutput, fileName))
 	if err != nil {
 		panic(throw.W(err, "failed to create machine stats file"))
 	}
@@ -100,7 +100,7 @@ func processFile(dir, fileName string) error {
 
 	writeMachineHeader(machineStatsWriter)
 
-	messageStatsFile, err := os.Create(messageStatsOutput)
+	messageStatsFile, err := os.Create(fmt.Sprintf("%s/%s.csv", messageStatsOutput, fileName))
 	if err != nil {
 		panic(throw.W(err, "failed to create machine stats file"))
 	}
