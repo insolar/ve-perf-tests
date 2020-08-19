@@ -56,7 +56,6 @@ func main() {
 		StepRPS:          50,
 		TestTimeSec:      3600,
 		FailOnFirstError: true,
-		DumpTransport:    true,
 	}
 	lt := loaderbot.NewRunner(cfg,
 		&ve_perf_tests.GetContractTestAttack{},
@@ -83,7 +82,6 @@ func main() {
 		StepRPS:          50,
 		TestTimeSec:      3600,
 		FailOnFirstError: true,
-		DumpTransport:    true,
 	}
 	lt2 := loaderbot.NewRunner(cfg2,
 		&ve_perf_tests.SetContractTestAttack{},

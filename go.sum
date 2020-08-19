@@ -204,6 +204,8 @@ github.com/insolar/loaderbot v0.0.24 h1:yUpBg7YodJqf8w1SR+w+1nST3vsQw0lEH1WoPX9o
 github.com/insolar/loaderbot v0.0.24/go.mod h1:2gHWbBPZJOa6KrVhDiiRnzeggrfjce9COFC/d+PVq1U=
 github.com/insolar/loaderbot v0.0.28 h1:0Q926sxxzwtZdiMVcstdaXIMaWUZRqmZZheiyfjAtTE=
 github.com/insolar/loaderbot v0.0.28/go.mod h1:nroUYRBCLbjI/nxNhV2uFBWFuHmLD75TlBuXMGOeAXM=
+github.com/insolar/loaderbot v0.0.29 h1:0bzltjg0VuDPgghdZGtP+kubIOJ4LUzOHxaLb8yUucE=
+github.com/insolar/loaderbot v0.0.29/go.mod h1:nroUYRBCLbjI/nxNhV2uFBWFuHmLD75TlBuXMGOeAXM=
 github.com/insolar/rpc v1.2.2-0.20190812143745-c27e1d218f1f/go.mod h1:BZcTsPtQu8QG8RqqQdAnuNAG8n6TOrdNxIHro0h99Ik=
 github.com/insolar/sm-uml-gen v1.0.0/go.mod h1:+Er0DZTt3vLlmzlZuwnxUqRm81WyfwPXsuZ5e9rZc8w=
 github.com/insolar/x-crypto v0.0.0-20191031140942-75fab8a325f6 h1:WS4a7qw+P1pcnviyxyMTA/aR+T51wJok1IC9rJkHrTg=
