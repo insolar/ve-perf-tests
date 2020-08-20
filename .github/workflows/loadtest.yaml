@@ -87,6 +87,11 @@ jobs:
         with:
           name: ${{matrix.target}}-scaling.csv
           path: scaling.csv
+      - name: cleanup
+        if: always()
+        run: |
+          cat deploy/kube/gitops/uscifarm-ingressroute.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl delete -f -
+          kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
       - name: get logcli
         if: always()
         run: |
@@ -134,11 +139,6 @@ jobs:
         with:
           name: html_report
           path: "**/*.html"
-      - name: cleanup
-        if: always()
-        run: |
-          cat deploy/kube/gitops/uscifarm-ingressroute.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl delete -f -
-          kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
   ve-perf-report:
     name: ve-perf-report
     needs: ve-perf-test
