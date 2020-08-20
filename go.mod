@@ -7,7 +7,7 @@ require (
 	github.com/insolar/assured-ledger/ledger-core v0.0.0-20200811095133-eb75ba92a497
 	github.com/insolar/consensus-reports v0.0.0-20200515131339-fea7a784f1d6
 	github.com/insolar/insconfig v0.0.0-20200513150834-977022bc1445
-	github.com/insolar/loaderbot v0.0.32
+	github.com/insolar/loaderbot v0.0.33
 	github.com/json-iterator/go v1.1.10
 	github.com/spf13/afero v1.3.4 // indirect
 	github.com/spf13/cobra v1.0.0
@@ -19,5 +19,7 @@ require (
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gopkg.in/yaml.v2 v2.3.0
 )
+
+replace github.com/insolar/loaderbot => /Users/sergejkudasov/go/src/github.com/insolar/loaderbot
 
 replace github.com/ugorji/go v1.1.4 => github.com/ugorji/go/codec v0.0.0-20190204201341-e444a5086c43

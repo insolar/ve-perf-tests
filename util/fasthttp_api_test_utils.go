@@ -18,21 +18,25 @@ func GetWalletBalanceFast(client *loaderbot.FastHTTPClient, url, ref string) (ui
 	req.SetRequestURI(url)
 	b, _ := json.Marshal(WalletGetBalanceRequestBody{Ref: ref})
 	req.SetBody(b)
-	status, resp, err := client.Do(req, &WalletGetBalanceResponse{})
+	resp := fasthttp.AcquireResponse()
+	defer fasthttp.ReleaseRequest(req)
+	defer fasthttp.ReleaseResponse(resp)
+
+	err := client.Do(req, resp)
 	if err != nil {
 		return 0, err
 	}
-	if status >= 400 {
-		return 0, errors.New("request failed, status: %d", status)
+	if resp.StatusCode() >= 400 {
+		return 0, errors.New("request failed, status: %d", resp.StatusCode())
 	}
-	if resp != nil {
-		res := resp.(*WalletGetBalanceResponse)
-		if res.Err != "" {
-			return 0, fmt.Errorf("problem during execute request: %s", res.Err)
-		}
-		return res.Amount, nil
+	var respStruct *WalletGetBalanceResponse
+	if err := json.Unmarshal(resp.Body(), &respStruct); err != nil {
+		return 0, err
 	}
-	return 0, nil
+	if respStruct.Err != "" {
+		return 0, fmt.Errorf("problem during execute request: %s", respStruct.Err)
+	}
+	return respStruct.Amount, nil
 }
 
 func AddAmountToWalletFast(client *loaderbot.FastHTTPClient, url, ref string, amount uint) error {
@@ -40,18 +44,22 @@ func AddAmountToWalletFast(client *loaderbot.FastHTTPClient, url, ref string, am
 	req.SetRequestURI(url)
 	b, _ := json.Marshal(WalletAddAmountRequestBody{To: ref, Amount: amount})
 	req.SetBody(b)
-	status, resp, err := client.Do(req, &WalletAddAmountResponse{})
+	resp := fasthttp.AcquireResponse()
+	defer fasthttp.ReleaseRequest(req)
+	defer fasthttp.ReleaseResponse(resp)
+	err := client.Do(req, resp)
 	if err != nil {
 		return err
 	}
-	if status >= 400 {
-		return errors.New("status: %d", status)
+	if resp.StatusCode() >= 400 {
+		return errors.New("request failed, status: %d", resp.StatusCode())
 	}
-	if resp != nil {
-		res := resp.(*WalletAddAmountResponse)
-		if res.Err != "" {
-			return fmt.Errorf("problem during execute request: %s", res.Err)
-		}
+	var respStruct *WalletAddAmountResponse
+	if err := json.Unmarshal(resp.Body(), &respStruct); err != nil {
+		return err
+	}
+	if respStruct.Err != "" {
+		return fmt.Errorf("problem during execute request: %s", respStruct.Err)
 	}
 	return nil
 }

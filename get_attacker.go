@@ -27,13 +27,6 @@ func (a *GetContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
 			RequestLabel: a.Name,
 		}
 	}
-	// if balance != util.StartBalance {
-	// 	return loaderbot.DoResult{
-	// 		Error:        "balance is not equal to start balance",
-	// 		RequestLabel: a.Name,
-	// 	}
-	// }
-
 	return loaderbot.DoResult{
 		RequestLabel: a.Name,
 	}
