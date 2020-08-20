@@ -41,53 +41,85 @@ func main() {
 	}
 	scalingResults := csv.NewWriter(loaderbot.CreateFileOrAppend(scalingCSVFileName))
 
-	cfg := &loaderbot.RunnerConfig{
-		TargetUrl:        target,
-		Name:             "get_attack",
-		SystemMode:       loaderbot.PrivateSystem,
-		Attackers:        1500,
-		AttackerTimeout:  25,
-		StartRPS:         600,
-		StepDurationSec:  30,
-		StepRPS:          50,
-		TestTimeSec:      3600,
-		FailOnFirstError: true,
+	// echo run
+	{
+		cfg := &loaderbot.RunnerConfig{
+			TargetUrl:        target,
+			Name:             "echo_attack",
+			SystemMode:       loaderbot.OpenWorldSystem,
+			AttackerTimeout:  25,
+			StartRPS:         600,
+			StepDurationSec:  30,
+			StepRPS:          50,
+			TestTimeSec:      3600,
+			FailOnFirstError: true,
+		}
+		lt := loaderbot.NewRunner(cfg,
+			&ve_perf_tests.EchoContractTestAttack{},
+			nil,
+		)
+		maxRPS, _ := lt.Run(context.TODO())
+		scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
+		fmt.Printf("max rps: %.2f\n", maxRPS)
 	}
-	lt := loaderbot.NewRunner(cfg,
-		&ve_perf_tests.GetContractTestAttack{},
-		&util.SharedData{
-			Mutex: &sync.Mutex{},
-			Data:  wallets,
-		},
-	)
-	maxRPS, _ := lt.Run(context.TODO())
-	scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
-	fmt.Printf("max rps: %.2f\n", maxRPS)
 
 	fmt.Printf("waiting next test\n")
-	time.Sleep(60 * time.Second)
+	time.Sleep(20 * time.Second)
 
-	cfg2 := &loaderbot.RunnerConfig{
-		TargetUrl:        target,
-		Name:             "set_attack",
-		SystemMode:       loaderbot.PrivateSystem,
-		Attackers:        1500,
-		AttackerTimeout:  25,
-		StartRPS:         600,
-		StepDurationSec:  30,
-		StepRPS:          50,
-		TestTimeSec:      3600,
-		FailOnFirstError: true,
+	// get run
+	{
+		cfg := &loaderbot.RunnerConfig{
+			TargetUrl:        target,
+			Name:             "get_attack",
+			SystemMode:       loaderbot.PrivateSystem,
+			Attackers:        1000,
+			AttackerTimeout:  25,
+			StartRPS:         600,
+			StepDurationSec:  30,
+			StepRPS:          50,
+			TestTimeSec:      3600,
+			FailOnFirstError: true,
+		}
+		lt := loaderbot.NewRunner(cfg,
+			&ve_perf_tests.GetContractTestAttack{},
+			&util.SharedData{
+				Mutex: &sync.Mutex{},
+				Data:  wallets,
+			},
+		)
+		maxRPS, _ := lt.Run(context.TODO())
+		scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
+		fmt.Printf("max rps: %.2f\n", maxRPS)
 	}
-	lt2 := loaderbot.NewRunner(cfg2,
-		&ve_perf_tests.SetContractTestAttack{},
-		&util.SharedData{
-			Mutex: &sync.Mutex{},
-			Data:  wallets,
-		},
-	)
-	maxRPS2, _ := lt2.Run(context.TODO())
-	scalingResults.Write([]string{lt2.Name, nodes, fmt.Sprintf("%.2f", maxRPS2)})
-	fmt.Printf("max rps: %.2f", maxRPS2)
+
+	fmt.Printf("waiting next test\n")
+	time.Sleep(20 * time.Second)
+
+	// set run
+	{
+		cfg := &loaderbot.RunnerConfig{
+			TargetUrl:        target,
+			Name:             "set_attack",
+			SystemMode:       loaderbot.PrivateSystem,
+			Attackers:        1000,
+			AttackerTimeout:  25,
+			StartRPS:         600,
+			StepDurationSec:  30,
+			StepRPS:          50,
+			TestTimeSec:      3600,
+			FailOnFirstError: true,
+		}
+		lt := loaderbot.NewRunner(cfg,
+			&ve_perf_tests.SetContractTestAttack{},
+			&util.SharedData{
+				Mutex: &sync.Mutex{},
+				Data:  wallets,
+			},
+		)
+		maxRPS2, _ := lt.Run(context.TODO())
+		scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS2)})
+		fmt.Printf("max rps: %.2f\n", maxRPS2)
+	}
+
 	scalingResults.Flush()
 }
