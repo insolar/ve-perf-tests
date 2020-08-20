@@ -105,7 +105,7 @@ jobs:
         env:
           TARGET: ${{matrix.target}}
         run: |
-          sleep 5m
+          sleep 8m
           mkdir -p logs/${INSOLAR_NAMESPACE}
           logcli --addr="$LOKI_URL" query '{namespace="'$INSOLAR_NAMESPACE'", pod="pulsar-0"}' --no-labels -q --since=4h --limit=5000000 --output=raw --forward --batch=250000 > logs/${INSOLAR_NAMESPACE}/pulsar-0.log
           for pod in $(seq 0 $(echo $(($(echo "$TARGET" | grep -o '[0-9]\+')-1)))); do
