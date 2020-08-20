@@ -7,7 +7,7 @@ require (
 	github.com/insolar/assured-ledger/ledger-core v0.0.0-20200811095133-eb75ba92a497
 	github.com/insolar/consensus-reports v0.0.0-20200515131339-fea7a784f1d6
 	github.com/insolar/insconfig v0.0.0-20200513150834-977022bc1445
-	github.com/insolar/loaderbot v0.0.31
+	github.com/insolar/loaderbot v0.0.32
 	github.com/json-iterator/go v1.1.10
 	github.com/spf13/afero v1.3.4 // indirect
 	github.com/spf13/cobra v1.0.0

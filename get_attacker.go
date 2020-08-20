@@ -20,19 +20,19 @@ func (a *GetContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
 func (a *GetContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
 	url := a.Cfg.TargetUrl + util.WalletGetBalancePath
 	ref := a.TestData.(*util.SharedData).GetNextData()
-	balance, err := util.GetWalletBalanceFast(a.client, url, ref)
+	_, err := util.GetWalletBalanceFast(a.client, url, ref)
 	if err != nil {
 		return loaderbot.DoResult{
 			Error:        err.Error(),
 			RequestLabel: a.Name,
 		}
 	}
-	if balance != util.StartBalance {
-		return loaderbot.DoResult{
-			Error:        "balance is not equal to start balance",
-			RequestLabel: a.Name,
-		}
-	}
+	// if balance != util.StartBalance {
+	// 	return loaderbot.DoResult{
+	// 		Error:        "balance is not equal to start balance",
+	// 		RequestLabel: a.Name,
+	// 	}
+	// }
 
 	return loaderbot.DoResult{
 		RequestLabel: a.Name,
