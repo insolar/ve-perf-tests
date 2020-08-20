@@ -20,8 +20,7 @@ func (a *GetContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
 func (a *GetContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
 	url := a.Cfg.TargetUrl + util.WalletGetBalancePath
 	ref := a.TestData.(*util.SharedData).GetNextData()
-	_, err := util.GetWalletBalanceFast(a.client, url, ref)
-	if err != nil {
+	if err := util.GetWalletBalanceFast(a.client, url, ref); err != nil {
 		return loaderbot.DoResult{
 			Error:        err.Error(),
 			RequestLabel: a.Name,

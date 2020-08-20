@@ -39,6 +39,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Printf("wallets created:\n")
+	for _, w := range wallets {
+		fmt.Printf(w + "\n")
+	}
 	scalingResults := csv.NewWriter(loaderbot.CreateFileOrAppend(scalingCSVFileName))
 
 	// echo run

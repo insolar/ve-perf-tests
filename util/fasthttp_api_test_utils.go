@@ -13,7 +13,7 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-func GetWalletBalanceFast(client *loaderbot.FastHTTPClient, url, ref string) (uint, error) {
+func GetWalletBalanceFast(client *loaderbot.FastHTTPClient, url, ref string) error {
 	req := fasthttp.AcquireRequest()
 	req.SetRequestURI(url)
 	b, _ := json.Marshal(WalletGetBalanceRequestBody{Ref: ref})
@@ -24,19 +24,22 @@ func GetWalletBalanceFast(client *loaderbot.FastHTTPClient, url, ref string) (ui
 
 	err := client.Do(req, resp)
 	if err != nil {
-		return 0, err
+		return err
 	}
 	if resp.StatusCode() >= 400 {
-		return 0, errors.New("request failed, status: %d", resp.StatusCode())
+		return errors.New("request failed, status: %d", resp.StatusCode())
 	}
 	var respStruct *WalletGetBalanceResponse
 	if err := json.Unmarshal(resp.Body(), &respStruct); err != nil {
-		return 0, err
+		return err
 	}
 	if respStruct.Err != "" {
-		return 0, fmt.Errorf("problem during execute request: %s", respStruct.Err)
+		return fmt.Errorf("problem during execute request: %s", respStruct.Err)
 	}
-	return respStruct.Amount, nil
+	if respStruct.Amount != StartBalance {
+		return errors.New("balance is not equal to start balance")
+	}
+	return nil
 }
 
 func AddAmountToWalletFast(client *loaderbot.FastHTTPClient, url, ref string, amount uint) error {

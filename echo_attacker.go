@@ -27,20 +27,13 @@ func (a *EchoContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
 }
 func (a *EchoContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
 	url := a.Cfg.TargetUrl + util.WalletGetBalancePath
-	balance, err := util.GetWalletBalance(a.client, url, statemachine.BuiltinTestAPIEcho)
+	_, err := util.GetWalletBalance(a.client, url, statemachine.BuiltinTestAPIEcho)
 	if err != nil {
 		return loaderbot.DoResult{
 			Error:        err.Error(),
 			RequestLabel: a.Name,
 		}
 	}
-	if balance != util.StartBalance {
-		return loaderbot.DoResult{
-			Error:        "balance is not equal to start balance",
-			RequestLabel: a.Name,
-		}
-	}
-
 	return loaderbot.DoResult{
 		RequestLabel: a.Name,
 	}
