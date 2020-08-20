@@ -39,36 +39,32 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("wallets created:\n")
-	for _, w := range wallets {
-		fmt.Printf(w + "\n")
-	}
 	scalingResults := csv.NewWriter(loaderbot.CreateFileOrAppend(scalingCSVFileName))
 
-	// echo run
-	{
-		cfg := &loaderbot.RunnerConfig{
-			TargetUrl:        target,
-			Name:             "echo_attack",
-			SystemMode:       loaderbot.OpenWorldSystem,
-			AttackerTimeout:  25,
-			StartRPS:         600,
-			StepDurationSec:  30,
-			StepRPS:          50,
-			TestTimeSec:      3600,
-			FailOnFirstError: true,
-		}
-		lt := loaderbot.NewRunner(cfg,
-			&ve_perf_tests.EchoContractTestAttack{},
-			nil,
-		)
-		maxRPS, _ := lt.Run(context.TODO())
-		scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
-		fmt.Printf("max rps: %.2f\n", maxRPS)
-	}
-
-	fmt.Printf("waiting next test\n")
-	time.Sleep(20 * time.Second)
+	// // echo run
+	// {
+	// 	cfg := &loaderbot.RunnerConfig{
+	// 		TargetUrl:        target,
+	// 		Name:             "echo_attack",
+	// 		SystemMode:       loaderbot.OpenWorldSystem,
+	// 		AttackerTimeout:  25,
+	// 		StartRPS:         600,
+	// 		StepDurationSec:  30,
+	// 		StepRPS:          50,
+	// 		TestTimeSec:      3600,
+	// 		FailOnFirstError: true,
+	// 	}
+	// 	lt := loaderbot.NewRunner(cfg,
+	// 		&ve_perf_tests.EchoContractTestAttack{},
+	// 		nil,
+	// 	)
+	// 	maxRPS, _ := lt.Run(context.TODO())
+	// 	scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
+	// 	fmt.Printf("max rps: %.2f\n", maxRPS)
+	// }
+	//
+	// fmt.Printf("waiting next test\n")
+	// time.Sleep(20 * time.Second)
 
 	// get run
 	{
@@ -82,6 +78,7 @@ func main() {
 			StepDurationSec:  30,
 			StepRPS:          50,
 			TestTimeSec:      3600,
+			DumpTransport:    true,
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
