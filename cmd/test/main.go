@@ -78,7 +78,6 @@ func main() {
 			StepDurationSec:  30,
 			StepRPS:          50,
 			TestTimeSec:      3600,
-			DumpTransport:    true,
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
