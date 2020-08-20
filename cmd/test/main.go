@@ -93,7 +93,7 @@ func main() {
 	}
 
 	fmt.Printf("waiting next test\n")
-	time.Sleep(120 * time.Second)
+	time.Sleep(300 * time.Second)
 
 	// set run
 	{
