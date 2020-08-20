@@ -102,6 +102,8 @@ jobs:
           echo "::add-path::$GITHUB_WORKSPACE/bin"
       - name: aggregate logs
         if: always()
+        env:
+          TARGET: ${{matrix.target}}
         run: |
           sleep 3m
           mkdir -p logs/${INSOLAR_NAMESPACE}
