@@ -75,9 +75,9 @@ func main() {
 			Attackers:        1000,
 			AttackerTimeout:  25,
 			StartRPS:         600,
-			StepDurationSec:  30,
+			StepDurationSec:  20,
 			StepRPS:          50,
-			TestTimeSec:      3600,
+			TestTimeSec:      900,
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
@@ -104,9 +104,9 @@ func main() {
 			Attackers:        1000,
 			AttackerTimeout:  25,
 			StartRPS:         600,
-			StepDurationSec:  30,
+			StepDurationSec:  20,
 			StepRPS:          50,
-			TestTimeSec:      3600,
+			TestTimeSec:      900,
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
