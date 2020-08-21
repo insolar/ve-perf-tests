@@ -100,12 +100,10 @@ jobs:
             fi
           done
           exit 1
-      - name: check LoadBalancer ip's
-        run: |
-          curl -s "http://$INSOLAR_SVC_APP_VIRTUAL:8001/metrics"
-          curl -s "http://$INSOLAR_SVC_POD_VIRTUAL_0:8001/metrics"
       - name: start test
         run: |
+          echo "wait a minute for ingressroute/lb"
+          echo 60
           TARGET=http://${INSOLAR_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}') go run cmd/test/main.go
           cat scaling.csv
       - name: Upload
