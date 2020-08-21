@@ -87,11 +87,6 @@ jobs:
         with:
           name: ${{matrix.target}}-scaling.csv
           path: scaling.csv
-      - name: cleanup
-        if: always()
-        run: |
-          cat deploy/kube/gitops/uscifarm-ingressroute.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl delete -f -
-          kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
       - name: get logcli
         if: always()
         run: |
@@ -105,11 +100,11 @@ jobs:
         env:
           TARGET: ${{matrix.target}}
         run: |
-          sleep 8m
+          echo "Waiting for logs to settle"
+          sleep 5m
           mkdir -p logs/${INSOLAR_NAMESPACE}
-          logcli --addr="$LOKI_URL" query '{namespace="'$INSOLAR_NAMESPACE'", pod="pulsar-0"}' --no-labels -q --since=4h --limit=5000000 --output=raw --forward --batch=250000 > logs/${INSOLAR_NAMESPACE}/pulsar-0.log
-          for pod in $(seq 0 $(echo $(($(echo "$TARGET" | grep -o '[0-9]\+')-1)))); do
-            logcli --addr="$LOKI_URL" query '{namespace="'$INSOLAR_NAMESPACE'", pod="virtual-'$pod'"}' --no-labels -q --since=4h --limit=5000000 --output=raw --forward --batch=250000 > logs/${INSOLAR_NAMESPACE}/virtual-"$pod".log
+          for pod in $(kubectl -n $INSOLAR_NAMESPACE get po -l 'app in (virtual, pulsar)' -o=custom-columns=NAME:.metadata.name --no-headers); do
+            logcli --addr="$LOKI_URL" query '{namespace="'$INSOLAR_NAMESPACE'", pod="'$pod'"}' --no-labels -q --since=4h --limit=5000000 --output=raw --forward --batch=250000 > logs/${INSOLAR_NAMESPACE}/"$pod".log
           done
       - name: create stats from logs
         run: |
@@ -141,6 +136,11 @@ jobs:
         with:
           name: html_report
           path: "**/*.html"
+      - name: cleanup	
+        if: always()	
+        run: |	
+          cat deploy/kube/gitops/uscifarm-ingressroute.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl delete -f -	
+          kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
   ve-perf-report:
     name: ve-perf-report
     needs: ve-perf-test
