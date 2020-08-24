@@ -20,16 +20,6 @@ jobs:
         uses: actions/checkout@v2
       - name: Preparation - save kubeconfig
         run: echo "${{secrets.CLOUD_KUBECONFIG}}" >> aks.yaml
-      - name: show node port
-        run: |
-          kubectl get svc -n insolar-nginx-test -o go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}{{end}}'
-      - name: Preparation - set prerequisite variables, full sha is ${{github.sha}}
-        run: |
-          echo "::set-env name=INSOLAR_TAG::${GITHUB_SHA:0:8}"
-          echo "::set-env name=INSOLAR_NETWORK_SIZE::${TARGET}"
-          echo "::set-env name=INSOLAR_NAMESPACE::insolar-nginx-test"
-          echo "::set-env name=INSOLAR_DESIRED_UPTIME::300"
-          echo "::set-env name=NGINX_NODE_PORT::$( kubectl get svc -n insolar-nginx-test -o go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}{{end}}' )"
       - name: Praparation - github token for gitops access
         run: git config --global url."https://${{secrets.INS_SERVICE_PAT}}@github.com/".insteadOf "https://github.com/"
       - name: Ingress access check (IF THIS STEP FAILED - CALL DEVOPS, RED ALERT)
@@ -42,6 +32,15 @@ jobs:
       - name: wait nginx is ready
         run: |
           sleep 20
+      - name: show node port
+        run: |
+          kubectl get svc -n insolar-nginx-test -o go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}{{end}}'
+      - name: Preparation - set prerequisite variables, full sha is ${{github.sha}}
+        run: |
+          echo "::set-env name=INSOLAR_NAMESPACE::insolar-nginx-test"
+          echo "::set-env name=NGINX_NODE_PORT::$( kubectl get svc -n insolar-nginx-test -o go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}{{end}}' )"
+      - name:
+        run: |
           curl -v http://${INSOLAR_NAMESPACE}.uscifarm.insolar.io:${NGINX_NODE_PORT}
       - name: start test
         run: |
