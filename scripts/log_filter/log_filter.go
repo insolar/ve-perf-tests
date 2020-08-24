@@ -65,7 +65,32 @@ func filterLogs(_ *cobra.Command, args []string) {
 		panic(throw.W(err, "failed to read directory"))
 	}
 
-	machineStatsFile, err := os.Create(machineStateOutput)
+	_, err = os.Stat(machineStateOutput)
+	if err != nil {
+		panic(throw.W(err, "provide proper machine stats directory"))
+	}
+
+	_, err = os.Stat(messageStatsOutput)
+	if err != nil {
+		panic(throw.W(err, "provide proper machine stats directory"))
+	}
+
+	for _, fileInfo := range files {
+		err := processFile(dir, fileInfo.Name())
+		if err != nil {
+			panic(throw.W(err, "failed to read file", struct{ File string }{File: fileInfo.Name()}))
+		}
+	}
+}
+
+func processFile(dir, fileName string) error {
+	file, err := os.Open(fmt.Sprintf("%s/%s", dir, fileName))
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	machineStatsFile, err := os.Create(fmt.Sprintf("%s/%s.csv", machineStateOutput, fileName))
 	if err != nil {
 		panic(throw.W(err, "failed to create machine stats file"))
 	}
@@ -75,7 +100,7 @@ func filterLogs(_ *cobra.Command, args []string) {
 
 	writeMachineHeader(machineStatsWriter)
 
-	messageStatsFile, err := os.Create(messageStatsOutput)
+	messageStatsFile, err := os.Create(fmt.Sprintf("%s/%s.csv", messageStatsOutput, fileName))
 	if err != nil {
 		panic(throw.W(err, "failed to create machine stats file"))
 	}
@@ -84,31 +109,6 @@ func filterLogs(_ *cobra.Command, args []string) {
 	messageStatsWriter := csv.NewWriter(messageStatsFile)
 
 	writeMessageHeader(messageStatsWriter)
-
-	for _, fileInfo := range files {
-		err := processFile(dir, fileInfo.Name(), machineStatsWriter, messageStatsWriter)
-		if err != nil {
-			panic(throw.W(err, "failed to read file", struct{ File string }{File: fileInfo.Name()}))
-		}
-	}
-	machineStatsWriter.Flush()
-	messageStatsWriter.Flush()
-
-	if err = machineStatsWriter.Error(); err != nil {
-		panic(throw.W(err, "failed to write machine stats csv"))
-	}
-
-	if err = messageStatsWriter.Error(); err != nil {
-		panic(throw.W(err, "failed to write messages stats csv"))
-	}
-}
-
-func processFile(dir, fileName string, machineStatsWriter, messageStatsWriter *csv.Writer) error {
-	file, err := os.Open(fmt.Sprintf("%s/%s", dir, fileName))
-	if err != nil {
-		return err
-	}
-	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -129,6 +129,9 @@ func processFile(dir, fileName string, machineStatsWriter, messageStatsWriter *c
 	if err := scanner.Err(); err != nil {
 		return err
 	}
+
+	machineStatsWriter.Flush()
+	messageStatsWriter.Flush()
 
 	if err = machineStatsWriter.Error(); err != nil {
 		panic(throw.W(err, "failed to write machine stats csv"))
