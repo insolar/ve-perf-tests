@@ -31,7 +31,7 @@ jobs:
       - name: Ingress access check (IF THIS STEP FAILED - CALL DEVOPS, RED ALERT)
         run:  curl -s "https://$PROMETHEUS_USER:$PROMETHEUS_PASS@prometheus.uscifarm.insolar.io/prometheus/api/v1/labels" | jq -r '.status'
       - name: create ns insolar-nginx-test
-        run: kubectl create ns
+        run: kubectl create ns insolar-nginx-test
       - name: Deploy network
         run: |
           kubectl -n $INSOLAR_NAMESPACE apply -f deploy/kube/nginx_test/deployment.yaml
