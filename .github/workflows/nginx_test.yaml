@@ -35,8 +35,9 @@ jobs:
           sleep 20
       - name: show svc
         run: kubectl -n $INSOLAR_NAMESPACE get svc
-      - name: show node port
+      - name: show clusterIP/node port
         run: |
+          kubectl get svc -n insolar-nginx-test -o jsonpath='{.items[*].spec.clusterIP}'
           kubectl get svc -n $INSOLAR_NAMESPACE -o go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}{{end}}'
       - name: set node port/clusterIP
         run: |
