@@ -24,6 +24,9 @@ jobs:
         run: git config --global url."https://${{secrets.INS_SERVICE_PAT}}@github.com/".insteadOf "https://github.com/"
       - name: Ingress access check (IF THIS STEP FAILED - CALL DEVOPS, RED ALERT)
         run:  curl -s "https://$PROMETHEUS_USER:$PROMETHEUS_PASS@prometheus.uscifarm.insolar.io/prometheus/api/v1/labels" | jq -r '.status'
+      - name: set namespace
+        run: |
+          echo "::set-env name=INSOLAR_NAMESPACE::insolar-nginx-test"
       - name: create ns insolar-nginx-test
         run: kubectl create ns insolar-nginx-test
       - name: Deploy nginx
@@ -34,10 +37,9 @@ jobs:
           sleep 20
       - name: show node port
         run: |
-          kubectl get svc -n insolar-nginx-test -o go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}{{end}}'
-      - name: Preparation - set prerequisite variables, full sha is ${{github.sha}}
+          kubectl get svc -n $INSOLAR_NAMESPACE -o go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}{{end}}'
+      - name: set node port
         run: |
-          echo "::set-env name=INSOLAR_NAMESPACE::insolar-nginx-test"
           echo "::set-env name=NGINX_NODE_PORT::$( kubectl get svc -n insolar-nginx-test -o go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}{{end}}' )"
       - name:
         run: |
