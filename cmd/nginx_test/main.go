@@ -19,7 +19,7 @@ func main() {
 		SystemMode:       loaderbot.PrivateSystem,
 		Attackers:        3000,
 		AttackerTimeout:  25,
-		StartRPS:         100,
+		StartRPS:         1000,
 		StepDurationSec:  20,
 		StepRPS:          500,
 		TestTimeSec:      1800,
