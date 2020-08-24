@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout test
         uses: actions/checkout@v2
+      - name: Preparation - save kubeconfig
+        run: echo "${{secrets.CLOUD_KUBECONFIG}}" >> aks.yaml
       - name: Preparation - set prerequisite variables, full sha is ${{github.sha}}
         run: |
           echo "::set-env name=INSOLAR_TAG::${GITHUB_SHA:0:8}"
