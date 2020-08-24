@@ -32,7 +32,7 @@ jobs:
           kubectl -n $INSOLAR_NAMESPACE apply -f deploy/kube/nginx_test/deployment.yaml
       - name: wait nginx is ready
         run: |
-          sleep 600
+          sleep 300
       - name: show svc
         run: kubectl -n $INSOLAR_NAMESPACE get svc
       - name: show clusterIP/node port
@@ -42,13 +42,13 @@ jobs:
       - name: set node port/clusterIP
         run: |
           echo "::set-env name=NGINX_NODE_PORT::$( kubectl get svc -n insolar-nginx-test -o go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}{{end}}' )"
-          echo "::set-env name=CLUSTER_IP::$( kubectl get svc -n insolar-nginx-test -o jsonpath='{.items[*].spec.clusterIP}' )"
+          echo "::set-env name=EXTERNAL_IP::$( kubectl get svc -n insolar-nginx-test -o jsonpath='{.items[*].spec.externalIP}' )"
       - name: check nginx
         run: |
           curl -v --max-time 5 http://localhost:8080
       - name: start test
         run: |
-          TARGET=http://localhost:8080 go run cmd/nginx_test/main.go
+          TARGET=http://${EXTERNAL_IP}:8080 go run cmd/nginx_test/main.go
       - name: cleanup
         if: always()
         run: |
