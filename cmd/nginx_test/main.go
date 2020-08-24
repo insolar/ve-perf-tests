@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/insolar/loaderbot"
+
+	ve_perf_tests "github.com/insolar/ve-perf-tests"
 )
 
 func main() {
@@ -15,7 +17,7 @@ func main() {
 	}
 	cfg := &loaderbot.RunnerConfig{
 		TargetUrl:        target + "/static.html",
-		Name:             "simple_echo_attack",
+		Name:             "nginx_test",
 		SystemMode:       loaderbot.PrivateSystem,
 		Attackers:        3000,
 		AttackerTimeout:  25,
@@ -26,7 +28,7 @@ func main() {
 		FailOnFirstError: true,
 	}
 	lt := loaderbot.NewRunner(cfg,
-		&loaderbot.FastHTTPAttackerExample{},
+		&ve_perf_tests.NginxAttack{},
 		nil,
 	)
 	_, _ = lt.Run(context.TODO())
