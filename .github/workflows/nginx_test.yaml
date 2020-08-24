@@ -44,7 +44,7 @@ jobs:
           echo "::set-env name=CLUSTER_IP::$( kubectl get svc -n insolar-nginx-test -o jsonpath='{.items[*].spec.clusterIP}' )"
       - name: check nginx
         run: |
-          curl -v http://${CLUSTER_IP}:${NGINX_NODE_PORT}
+          curl -v --max-time 5 http://${CLUSTER_IP}:${NGINX_NODE_PORT}
       - name: start test
         run: |
           TARGET=http://${CLUSTER_IP}:${NGINX_NODE_PORT} go run cmd/nginx_test/main.go
