@@ -26,7 +26,7 @@ func main() {
 		FailOnFirstError: true,
 	}
 	lt := loaderbot.NewRunner(cfg,
-		&loaderbot.FastHTTPAttackerExample{},
+		&loaderbot.HTTPAttackerExample{},
 		nil,
 	)
 	_, _ = lt.Run(context.TODO())
