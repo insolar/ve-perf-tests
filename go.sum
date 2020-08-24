@@ -196,8 +196,8 @@ github.com/hexdigest/gowrap v1.1.8 h1:xGTnuMvHou3sa+PSHphOCxPJTJyqNRvGl21t/p3eLe
 github.com/hexdigest/gowrap v1.1.8/go.mod h1:H/JiFmQMp//tedlV8qt2xBdGzmne6bpbaSuiHmygnMw=
 github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NHg9XEKhtSvM=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
-github.com/insolar/assured-ledger/ledger-core v0.0.0-20200819141219-f66df87d008d h1:Vy5/U11ebbb3eiJGCDcDiX6R7N+GS+EsOM40rgueCFo=
-github.com/insolar/assured-ledger/ledger-core v0.0.0-20200819141219-f66df87d008d/go.mod h1:eypYxn+uS+IOoNjvu05i6Qw83vDU38Hq7aIG8jwu8KE=
+github.com/insolar/assured-ledger/ledger-core v0.0.0-20200820152711-c8bbc0025525 h1:owGnin+CxIgG8Gb2vviqfFgKYfZ+AXj84TY0GIJVZuY=
+github.com/insolar/assured-ledger/ledger-core v0.0.0-20200820152711-c8bbc0025525/go.mod h1:c8islynuO4QgRIL5YnxPXrYyiOyxQ5LeELF8AV3gXjs=
 github.com/insolar/component-manager v0.2.1-0.20191028200619-751a91771d2f h1:06p+6HGiIraHhZ2Bmya40d8+TPiwEe/ftgb46XC9B0Q=
 github.com/insolar/component-manager v0.2.1-0.20191028200619-751a91771d2f/go.mod h1:pyNB4e1NrTdT7BJJGMedR5OYIa6+zHLpak2Jwk9Aj88=
 github.com/insolar/consensus-reports v0.0.0-20200515131339-fea7a784f1d6 h1:5+nSCpibEUNmzD7S7dxBNq3AxrSaQBZJzia3R7vASBg=
@@ -218,6 +218,8 @@ github.com/insolar/loaderbot v0.0.32 h1:/OqRwCJsG7nbtSpmqY8eQ95tsV5xj8+Ze1dMypsn
 github.com/insolar/loaderbot v0.0.32/go.mod h1:LzQkXr9NtsL2rYJRq0fuE/T85RgPGdQHndKHJk/5mgE=
 github.com/insolar/loaderbot v0.0.33 h1:KmiOSBA1948F2zG7adzvKXYtzJTiB+Jry2usi4OnG8Y=
 github.com/insolar/loaderbot v0.0.33/go.mod h1:nAmJKr5VHaO+7vF1W69GqpWkJAZA5puTmrO2bTLqqSY=
+github.com/insolar/loaderbot v0.0.34 h1:SdfdMB/7VUMt+w9PkJBS3hs4rx+DM2eqxui+3ptU0co=
+github.com/insolar/loaderbot v0.0.34/go.mod h1:4r5ax/y6cbBerQ2pxQIF2nvleqi5dshF9zb2IKj5KNI=
 github.com/insolar/rpc v1.2.2-0.20190812143745-c27e1d218f1f h1:ULc0JNaPBjv2yxucU06zkqoXtDgX5Xokb4Dv3iJAcsE=
 github.com/insolar/rpc v1.2.2-0.20190812143745-c27e1d218f1f/go.mod h1:BZcTsPtQu8QG8RqqQdAnuNAG8n6TOrdNxIHro0h99Ik=
 github.com/insolar/sm-uml-gen v1.0.0 h1:/yduHtHlJ0/yYRtOokqJwKpVjZS0jlmlH5cQGIkbvL4=
@@ -226,12 +228,15 @@ github.com/insolar/x-crypto v0.0.0-20191031140942-75fab8a325f6 h1:WS4a7qw+P1pcnv
 github.com/insolar/x-crypto v0.0.0-20191031140942-75fab8a325f6/go.mod h1:9mvKFD2wFLEGmK8pNFIowmGRTjfyn3YHtr10s7DHpBY=
 github.com/jbenet/go-base58 v0.0.0-20150317085156-6237cf65f3a6 h1:4zOlv2my+vf98jT1nQt4bT/yKWUImevYPJ2H344CloE=
 github.com/jbenet/go-base58 v0.0.0-20150317085156-6237cf65f3a6/go.mod h1:r/8JmuR0qjuCiEhAolkfvdZgmPiHTnJaG0UXCSeR1Zo=
+github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a h1:zPPuIq2jAWWPTrGt70eK/BSch+gFAGrNzecsoENgu2o=
+github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a/go.mod h1:yL958EeXv8Ylng6IfnvG4oflryUi3vgA3xPs9hmII1s=
 github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a/go.mod h1:yL958EeXv8Ylng6IfnvG4oflryUi3vgA3xPs9hmII1s=
 github.com/jonboulle/clockwork v0.1.0 h1:VKV+ZcuP6l3yW9doeqz6ziZGgcynBVQO+obU0+0hcPo=
 github.com/jonboulle/clockwork v0.1.0/go.mod h1:Ii8DK3G1RaLaWxj9trq07+26W01tbo22gdxWY5EU2bo=
 github.com/json-iterator/go v1.1.6/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/json-iterator/go v1.1.9 h1:9yzud/Ht36ygwatGx56VwCZtlI/2AD15T1X2sjSuGns=
 github.com/json-iterator/go v1.1.9/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
+github.com/json-iterator/go v1.1.10/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
 github.com/json-iterator/go v1.1.10 h1:Kz6Cvnvv2wGdaG/V8yMvfkmNiXq9Ya2KUv4rouJJr68=
 github.com/json-iterator/go v1.1.10/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
 github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1:6v2b51hI/fHJwM22ozAgKL4VKDeJcHhJFhtBdhmNjmU=
@@ -295,6 +300,7 @@ github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742/go.mod h1:bx2lN
 github.com/modern-go/reflect2 v1.0.1 h1:9f412s+6RmYXLWZSEzVVgPGK7C2PphHj5RJrvfx9AWI=
 github.com/modern-go/reflect2 v1.0.1/go.mod h1:bx2lNnkwVCuqBIxFjflWJWanXIb3RllmbCylyMrvgv0=
 github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
+github.com/neilotoole/errgroup v0.1.5/go.mod h1:Q2nLGf+594h0CLBs/Mbg6qOr7GtqDK7C2S41udRnToE=
 github.com/oklog/ulid v1.3.1 h1:EGfNDEx6MqHz8B3uNV6QAib1UR2Lm97sHi3ocA6ESJ4=
 github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
 github.com/olekukonko/tablewriter v0.0.1/go.mod h1:vsDQFd/mU46D+Z4whnwzcISnGGzXWMclvtLoiIKAKIo=
@@ -305,6 +311,7 @@ github.com/ory/go-acc v0.2.3/go.mod h1:4Kb/UnPcT8qRAk3IAxta+hvVapdxTLWtrr7bFLlEg
 github.com/ory/viper v1.7.5 h1:+xVdq7SU3e1vNaCsk/ixsfxE4zylk1TJUiJrY647jUE=
 github.com/ory/viper v1.7.5/go.mod h1:ypOuyJmEUb3oENywQZRgeAMwqgOyDqwboO1tj3DjTaM=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
+github.com/paulbellamy/ratecounter v0.2.0/go.mod h1:Hfx1hDpSGoqxkVVpBi/IlYD7kChlfo5C6hzIHwPqfFE=
 github.com/pborman/uuid v1.2.0 h1:J7Q5mO4ysT1dv8hyrUGHb9+ooztCXu1D8MY8DZYsu3g=
 github.com/pborman/uuid v1.2.0/go.mod h1:X/NO0urCmaxf9VXbdlT7C2Yzkj2IKimNn4k+gtPdI/k=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
@@ -540,8 +547,8 @@ golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd/go.mod h1:h1NjWce9XRLGQEsW7w
 golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200728102440-3e129f6d46b1/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
-golang.org/x/sys v0.0.0-20200819141100-7c7a22168250 h1:d8jZLki63gfyhCX+AWmFwG0qt3CQs3KSzxbmtqupDHQ=
-golang.org/x/sys v0.0.0-20200819141100-7c7a22168250/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20200819171115-d785dc25833f h1:KJuwZVtZBVzDmEDtB2zro9CXkD9O0dpCv4o2LHbQIAw=
+golang.org/x/sys v0.0.0-20200819171115-d785dc25833f/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.1-0.20180807135948-17ff2d5776d2/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.2/go.mod h1:bEr9sfX3Q8Zfm5fL9x+3itogRgK3+ptLWKqgva+5dAk=
@@ -579,8 +586,8 @@ golang.org/x/tools v0.0.0-20200130002326-2f3ba24bd6e7/go.mod h1:TB2adYChydJhpapK
 golang.org/x/tools v0.0.0-20200312153518-5e2df02acb1e/go.mod h1:o4KQGtdN14AW+yjsvvwRTJJuXz8XRtIHtEnmAXLyFUw=
 golang.org/x/tools v0.0.0-20200723000907-a7c6fd066f6d h1:7k9BKfwmdbykG6l5ztniTrH0TP25yel8O7l26/yovMU=
 golang.org/x/tools v0.0.0-20200723000907-a7c6fd066f6d/go.mod h1:njjCfa9FT2d7l9Bc6FUM5FLjQPp3cFF28FI3qnDFljA=
-golang.org/x/tools v0.0.0-20200819140908-cf83efe03cf8 h1:vRX0wGqBdtbS6vDv0mxYgNYw03j7YntEHBrEb/KJeeE=
-golang.org/x/tools v0.0.0-20200819140908-cf83efe03cf8/go.mod h1:njjCfa9FT2d7l9Bc6FUM5FLjQPp3cFF28FI3qnDFljA=
+golang.org/x/tools v0.0.0-20200820010801-b793a1359eac h1:DugppSxw0LSF8lcjaODPJZoDzq0ElTGskTst3ZaBkHI=
+golang.org/x/tools v0.0.0-20200820010801-b793a1359eac/go.mod h1:njjCfa9FT2d7l9Bc6FUM5FLjQPp3cFF28FI3qnDFljA=
 golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 golang.org/x/xerrors v0.0.0-20191011141410-1b5146add898/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 h1:E7g+9GITq07hpfrRu66IVDexMakfv52eLZ2CXBWiKr4=

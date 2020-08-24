@@ -15,19 +15,20 @@ import (
 	"github.com/insolar/ve-perf-tests/util"
 )
 
-type EchoContractTestAttack struct {
+type SimpleEchoContractTestAttack struct {
 	*loaderbot.Runner
 	client  *http.Client
 	echoRef string
 }
 
-func (a *EchoContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
+func (a *SimpleEchoContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
 	a.client = loaderbot.NewLoggingHTTPClient(cfg.DumpTransport, 60)
 	return nil
 }
-func (a *EchoContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
+
+func (a *SimpleEchoContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
 	url := a.Cfg.TargetUrl + util.WalletGetBalancePath
-	_, err := util.GetWalletBalance(a.client, url, statemachine.BuiltinTestAPIEcho)
+	_, err := util.GetWalletBalance(a.client, url, statemachine.BuiltinTestAPIBriefEcho)
 	if err != nil {
 		return loaderbot.DoResult{
 			Error:        err.Error(),
@@ -39,10 +40,10 @@ func (a *EchoContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
 		RequestLabel: a.Name,
 	}
 }
-func (a *EchoContractTestAttack) Clone(r *loaderbot.Runner) loaderbot.Attack {
-	return &EchoContractTestAttack{Runner: r}
+func (a *SimpleEchoContractTestAttack) Clone(r *loaderbot.Runner) loaderbot.Attack {
+	return &SimpleEchoContractTestAttack{Runner: r}
 }
 
-func (a *EchoContractTestAttack) Teardown() error {
+func (a *SimpleEchoContractTestAttack) Teardown() error {
 	return nil
 }
