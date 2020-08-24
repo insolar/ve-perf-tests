@@ -9,10 +9,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/insolar/assured-ledger/ledger-core/application/testwalletapi/statemachine"
 	"github.com/insolar/loaderbot"
-
-	"github.com/insolar/ve-perf-tests/util"
 )
 
 type NginxAttack struct {
@@ -24,15 +21,12 @@ func (a *NginxAttack) Setup(cfg loaderbot.RunnerConfig) error {
 	return nil
 }
 func (a *NginxAttack) Do(_ context.Context) loaderbot.DoResult {
-	url := a.Cfg.TargetUrl + util.WalletGetBalancePath
-	_, err := util.GetWalletBalance(http.DefaultClient, url, statemachine.BuiltinTestAPIEcho)
-	if err != nil {
+	if _, err := http.DefaultClient.Get(a.Cfg.TargetUrl + "/static.html"); err != nil {
 		return loaderbot.DoResult{
 			Error:        err.Error(),
 			RequestLabel: a.Name,
 		}
 	}
-
 	return loaderbot.DoResult{
 		RequestLabel: a.Name,
 	}

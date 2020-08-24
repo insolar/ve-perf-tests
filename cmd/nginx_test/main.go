@@ -16,7 +16,7 @@ func main() {
 		log.Fatal("env variable TARGET must be set, ex.: http://127.0.0.1:32304")
 	}
 	cfg := &loaderbot.RunnerConfig{
-		TargetUrl:        target + "/static.html",
+		TargetUrl:        target,
 		Name:             "nginx_test",
 		SystemMode:       loaderbot.PrivateSystem,
 		Attackers:        3000,
