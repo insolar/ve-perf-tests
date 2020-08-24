@@ -21,12 +21,17 @@ func (a *NginxAttack) Setup(cfg loaderbot.RunnerConfig) error {
 	return nil
 }
 func (a *NginxAttack) Do(_ context.Context) loaderbot.DoResult {
-	if _, err := http.DefaultClient.Get(a.Cfg.TargetUrl + "/static.html"); err != nil {
+	res, err := http.DefaultClient.Get(a.Cfg.TargetUrl + "/static.html")
+	if res != nil {
+		defer res.Body.Close()
+	}
+	if err != nil {
 		return loaderbot.DoResult{
 			Error:        err.Error(),
 			RequestLabel: a.Name,
 		}
 	}
+
 	return loaderbot.DoResult{
 		RequestLabel: a.Name,
 	}
