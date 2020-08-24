@@ -7,7 +7,8 @@ package ve_perf_tests
 
 import (
 	"context"
-	"net/http"
+	"io"
+	"io/ioutil"
 
 	"github.com/insolar/loaderbot"
 )
@@ -21,8 +22,14 @@ func (a *NginxAttack) Setup(cfg loaderbot.RunnerConfig) error {
 	return nil
 }
 func (a *NginxAttack) Do(_ context.Context) loaderbot.DoResult {
-	res, err := http.DefaultClient.Get(a.Cfg.TargetUrl + "/static.html")
+	res, err := a.HTTPClient.Get(a.Cfg.TargetUrl + "/static.html")
 	if res != nil {
+		if _, err := io.Copy(ioutil.Discard, res.Body); err != nil {
+			return loaderbot.DoResult{
+				Error:        err.Error(),
+				RequestLabel: a.Name,
+			}
+		}
 		defer res.Body.Close()
 	}
 	if err != nil {
