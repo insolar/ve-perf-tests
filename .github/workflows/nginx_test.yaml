@@ -38,15 +38,16 @@ jobs:
       - name: show node port
         run: |
           kubectl get svc -n $INSOLAR_NAMESPACE -o go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}{{end}}'
-      - name: set node port
+      - name: set node port/clusterIP
         run: |
           echo "::set-env name=NGINX_NODE_PORT::$( kubectl get svc -n insolar-nginx-test -o go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}{{end}}' )"
+          echo "::set-env name=CLUSTER_IP::$( kubectl get svc -o jsonpath='{.items[*].spec.clusterIP}' )"
       - name: check nginx
         run: |
-          curl -v http://${INSOLAR_NAMESPACE}.uscifarm.insolar.io:${NGINX_NODE_PORT}
+          curl -v http://${CLUSTER_IP}:${NGINX_NODE_PORT}
       - name: start test
         run: |
-          TARGET=http://${INSOLAR_NAMESPACE}.uscifarm.insolar.io:${NGINX_NODE_PORT} go run cmd/nginx_test/main.go
+          TARGET=http://${CLUSTER_IP}:${NGINX_NODE_PORT} go run cmd/nginx_test/main.go
       - name: cleanup
         if: always()
         run: |
