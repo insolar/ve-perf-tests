@@ -93,7 +93,9 @@ jobs:
           done
       - name: create stats from logs
         run: |
-          go run scripts/log_filter/*.go logs/${INSOLAR_NAMESPACE} --machine-stats machine_stats_${INSOLAR_NETWORK_SIZE}.csv --message-stats message_stats_${INSOLAR_NETWORK_SIZE}.csv
+          mkdir -p reports/machine_stats_${INSOLAR_NETWORK_SIZE}
+          mkdir -p reports/message_stats_${INSOLAR_NETWORK_SIZE}
+          go run scripts/log_filter/*.go logs/${INSOLAR_NAMESPACE} --machine-stats reports/machine_stats_${INSOLAR_NETWORK_SIZE} --message-stats reports/message_stats_${INSOLAR_NETWORK_SIZE}
       - name: Aggregate logs into a single archive
         if: always()
         run: tar --warning=no-file-changed -cvzf nodes-logs.tgz ./logs || true
