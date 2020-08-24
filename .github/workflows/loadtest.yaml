@@ -104,7 +104,7 @@ jobs:
         run: |
           echo "wait a minute for ingressroute/lb"
           echo 60
-          TARGET=http://${INSOLAR_SVC_APP_VIRTUAL}:19101 REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}') go run cmd/test/main.go
+          TARGET=http://${INSOLAR_SVC_POD_VIRTUAL_0}:19101 REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}') go run cmd/test/main.go
           cat scaling.csv
       - name: Upload
         uses: actions/upload-artifact@v2
