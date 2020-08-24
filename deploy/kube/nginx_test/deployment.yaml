@@ -27,7 +27,7 @@ metadata:
   namespace: insolar-nginx-test
   name: nginx-test-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: nginx-test
   ports:

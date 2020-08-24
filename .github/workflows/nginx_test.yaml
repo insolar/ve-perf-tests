@@ -48,7 +48,7 @@ jobs:
           curl -v --max-time 5 http://${CLUSTER_IP}:${NGINX_NODE_PORT}
       - name: start test
         run: |
-          TARGET=http://${CLUSTER_IP}:${NGINX_NODE_PORT} go run cmd/nginx_test/main.go
+          TARGET=http://localhost:8080 go run cmd/nginx_test/main.go
       - name: cleanup
         if: always()
         run: |
