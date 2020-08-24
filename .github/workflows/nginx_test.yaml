@@ -32,7 +32,7 @@ jobs:
           kubectl -n $INSOLAR_NAMESPACE apply -f deploy/kube/nginx_test/deployment.yaml
       - name: wait nginx is ready
         run: |
-          sleep 20
+          sleep 120
       - name: show svc
         run: kubectl -n $INSOLAR_NAMESPACE get svc
       - name: show clusterIP/node port
