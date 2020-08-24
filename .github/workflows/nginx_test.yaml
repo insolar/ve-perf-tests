@@ -49,4 +49,6 @@ jobs:
         if: always()
         run: |
           kubectl -n $INSOLAR_NAMESPACE delete deployments nginx-deployment
-          kubectl delete ns insolar-nginx-test
+      - name: delete ns
+        if: always()
+        run: kubectl delete ns insolar-nginx-test
