@@ -1,8 +1,8 @@
 name: ve-performance check
-on:
-  pull_request:
-  schedule:
-    - cron: '0 1 * * *'
+#on:
+#  pull_request:
+#  schedule:
+#    - cron: '0 1 * * *'
 env:
   KUBECONFIG: "${{ github.workspace }}/aks.yaml"
   GO_VERSION: 1.14
