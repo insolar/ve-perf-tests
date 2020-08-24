@@ -2,7 +2,6 @@ package ve_perf_tests
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/insolar/loaderbot"
 
@@ -11,17 +10,17 @@ import (
 
 type SetContractTestAttack struct {
 	*loaderbot.Runner
-	client *http.Client
+	client *loaderbot.FastHTTPClient
 }
 
 func (a *SetContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
-	a.client = loaderbot.NewLoggingHTTPClient(cfg.DumpTransport, 60)
+	a.client = loaderbot.NewLoggingFastHTTPClient(cfg.DumpTransport)
 	return nil
 }
 func (a *SetContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
 	url := a.Cfg.TargetUrl + util.WalletAddAmountPath
 	ref := a.TestData.(*util.SharedData).GetNextData()
-	err := util.AddAmountToWallet(a.client, url, ref, 100)
+	err := util.AddAmountToWalletFast(a.client, url, ref, 100)
 	if err != nil {
 		return loaderbot.DoResult{
 			Error:        err.Error(),

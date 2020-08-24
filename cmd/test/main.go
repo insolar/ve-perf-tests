@@ -43,6 +43,7 @@ func main() {
 	for _, w := range wallets {
 		fmt.Printf(w + "\n")
 	}
+	time.Sleep(20 * time.Second)
 	scalingResults := csv.NewWriter(loaderbot.CreateFileOrAppend(scalingCSVFileName))
 
 	// simple echo run
@@ -52,7 +53,8 @@ func main() {
 		cfg := &loaderbot.RunnerConfig{
 			TargetUrl:        target,
 			Name:             "simple_echo_attack",
-			SystemMode:       loaderbot.OpenWorldSystem,
+			SystemMode:       loaderbot.PrivateSystem,
+			Attackers:        1500,
 			AttackerTimeout:  25,
 			StartRPS:         600,
 			StepDurationSec:  30,
@@ -61,7 +63,7 @@ func main() {
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
-			&ve_perf_tests.SimpleEchoContractTestAttack{},
+			&ve_perf_tests.SimpleEchoContractTestFastHTTPAttack{},
 			nil,
 		)
 		maxRPS, _ := lt.Run(context.TODO())
@@ -79,7 +81,8 @@ func main() {
 		cfg := &loaderbot.RunnerConfig{
 			TargetUrl:        target,
 			Name:             "echo_attack",
-			SystemMode:       loaderbot.OpenWorldSystem,
+			SystemMode:       loaderbot.PrivateSystem,
+			Attackers:        1500,
 			AttackerTimeout:  25,
 			StartRPS:         600,
 			StepDurationSec:  30,
@@ -88,7 +91,7 @@ func main() {
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
-			&ve_perf_tests.EchoContractTestAttack{},
+			&ve_perf_tests.EchoContractTestFastHTTPAttack{},
 			nil,
 		)
 		maxRPS, _ := lt.Run(context.TODO())

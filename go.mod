@@ -13,6 +13,7 @@ require (
 	github.com/spf13/afero v1.3.4 // indirect
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.6.1
+	github.com/valyala/fasthttp v1.16.0
 	go.uber.org/zap v1.15.0 // indirect
 	golang.org/x/sys v0.0.0-20200819171115-d785dc25833f // indirect
 	golang.org/x/tools v0.0.0-20200820010801-b793a1359eac // indirect
