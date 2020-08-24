@@ -33,13 +33,15 @@ jobs:
       - name: wait nginx is ready
         run: |
           sleep 20
+      - name: show svc
+        run: kubectl -n $INSOLAR_NAMESPACE get svc
       - name: show node port
         run: |
           kubectl get svc -n $INSOLAR_NAMESPACE -o go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}{{end}}'
       - name: set node port
         run: |
           echo "::set-env name=NGINX_NODE_PORT::$( kubectl get svc -n insolar-nginx-test -o go-template='{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\n"}}{{end}}{{end}}{{end}}' )"
-      - name:
+      - name: check nginx
         run: |
           curl -v http://${INSOLAR_NAMESPACE}.uscifarm.insolar.io:${NGINX_NODE_PORT}
       - name: start test
