@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: insolar
+  namespace: insolar-nginx-test
   name: nginx-deployment
   labels:
     app: nginx-test
@@ -24,7 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: insolar
+  namespace: insolar-nginx-test
   name: nginx-test-service
 spec:
   type: NodePort

@@ -24,7 +24,7 @@ jobs:
         run: |
           echo "::set-env name=INSOLAR_TAG::${GITHUB_SHA:0:8}"
           echo "::set-env name=INSOLAR_NETWORK_SIZE::${TARGET}"
-          echo "::set-env name=INSOLAR_NAMESPACE::${GITHUB_SHA:0:8}"
+          echo "::set-env name=INSOLAR_NAMESPACE::insolar-nginx-test"
           echo "::set-env name=INSOLAR_DESIRED_UPTIME::300"
       - name: Praparation - github token for gitops access
         run: git config --global url."https://${{secrets.INS_SERVICE_PAT}}@github.com/".insteadOf "https://github.com/"
