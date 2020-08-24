@@ -36,9 +36,6 @@ func GetWalletBalanceFast(client *loaderbot.FastHTTPClient, url, ref string) err
 	if respStruct.Err != "" {
 		return fmt.Errorf("problem during execute request: %s", respStruct.Err)
 	}
-	if respStruct.Amount != StartBalance {
-		return errors.New("balance is not equal to start balance")
-	}
 	return nil
 }
 
