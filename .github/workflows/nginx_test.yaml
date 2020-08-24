@@ -38,16 +38,6 @@ jobs:
       - name: wait nginx is ready
         run: |
           sleep 20
-      - name: Rollout check (IF THIS STEP FAILED - CALL DEV/OPS, YELLOW ALERT)
-        run: kubectl -n $INSOLAR_NAMESPACE rollout status sts/virtual --timeout=10m
-      - name: Provide link to grafana
-        run:  echo "https://monitoring.uscifarm.insolar.io/d/LmD-fXFZz/ins-network?orgId=1&refresh=10s&var-phase=All&var-packetType=All&var-namespace=$INSOLAR_NAMESPACE&from=now-10m&to=now"
-      - name: Set network start time variable
-        run:  echo "::set-env name=INSOLAR_START_TIME::$(date +'%s')"
-      - name: wait until uscifarm.insolar.io is ready
-        run: |
-          echo 'Sadly we dont know a better way than:'
-          sleep 60
       - name: start test
         run: |
           TARGET=http://${INSOLAR_NAMESPACE}.uscifarm.insolar.io:32081 go run cmd/nginx_test/main.go
