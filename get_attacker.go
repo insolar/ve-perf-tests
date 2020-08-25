@@ -10,17 +10,15 @@ import (
 
 type GetContractTestAttack struct {
 	*loaderbot.Runner
-	client *loaderbot.FastHTTPClient
 }
 
 func (a *GetContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
-	a.client = loaderbot.NewLoggingFastHTTPClient(cfg.DumpTransport)
 	return nil
 }
 func (a *GetContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
 	url := a.Cfg.TargetUrl + util.WalletGetBalancePath
 	ref := a.TestData.(*util.SharedData).GetNextData()
-	if err := util.GetWalletBalanceFast(a.client, url, ref); err != nil {
+	if _, err := util.GetWalletBalance(a.HTTPClient, url, ref); err != nil {
 		return loaderbot.DoResult{
 			Error:        err.Error(),
 			RequestLabel: a.Name,

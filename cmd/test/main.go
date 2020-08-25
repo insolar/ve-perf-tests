@@ -63,7 +63,7 @@ func main() {
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
-			&ve_perf_tests.SimpleEchoContractTestFastHTTPAttack{},
+			&ve_perf_tests.SimpleEchoContractTestAttack{},
 			nil,
 		)
 		maxRPS, _ := lt.Run(context.TODO())
@@ -91,7 +91,7 @@ func main() {
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
-			&ve_perf_tests.EchoContractTestFastHTTPAttack{},
+			&ve_perf_tests.EchoContractTestAttack{},
 			nil,
 		)
 		maxRPS, _ := lt.Run(context.TODO())
