@@ -86,7 +86,7 @@ jobs:
           export IFS=" "
           export IPS_PORTS
           for ip in $INSOLAR_SVC_POD_VIRTUAL; do
-            IPS_PORTS+="$ip:32301 "
+            IPS_PORTS+="http://$ip:32301 "
           done
           echo ${IPS_PORTS}
           echo "::set-env name=IPS_PORTS::${IPS_PORTS}"
@@ -100,7 +100,7 @@ jobs:
           sleep 60
       - name: start test
         run: |
-          TARGET=\"${IPS_PORTS}\" REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}') go run cmd/test/main.go
+          TARGET=${IPS_PORTS} REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}') go run cmd/test/main.go
           cat scaling.csv
       - name: Upload
         uses: actions/upload-artifact@v2
