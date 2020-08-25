@@ -222,6 +222,8 @@ github.com/insolar/loaderbot v0.0.34 h1:SdfdMB/7VUMt+w9PkJBS3hs4rx+DM2eqxui+3ptU
 github.com/insolar/loaderbot v0.0.34/go.mod h1:4r5ax/y6cbBerQ2pxQIF2nvleqi5dshF9zb2IKj5KNI=
 github.com/insolar/loaderbot v0.0.36 h1:Aqma/riYHGhLNdHWLq1bI6yzEQobhV4nse6C9jxpFeg=
 github.com/insolar/loaderbot v0.0.36/go.mod h1:4r5ax/y6cbBerQ2pxQIF2nvleqi5dshF9zb2IKj5KNI=
+github.com/insolar/loaderbot v0.0.37 h1:DE45G4cSp+RV1C8T05cJS3jXbqnj4sRxZidTQcsXCwg=
+github.com/insolar/loaderbot v0.0.37/go.mod h1:4r5ax/y6cbBerQ2pxQIF2nvleqi5dshF9zb2IKj5KNI=
 github.com/insolar/rpc v1.2.2-0.20190812143745-c27e1d218f1f h1:ULc0JNaPBjv2yxucU06zkqoXtDgX5Xokb4Dv3iJAcsE=
 github.com/insolar/rpc v1.2.2-0.20190812143745-c27e1d218f1f/go.mod h1:BZcTsPtQu8QG8RqqQdAnuNAG8n6TOrdNxIHro0h99Ik=
 github.com/insolar/sm-uml-gen v1.0.0 h1:/yduHtHlJ0/yYRtOokqJwKpVjZS0jlmlH5cQGIkbvL4=
