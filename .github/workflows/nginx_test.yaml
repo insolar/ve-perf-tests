@@ -49,6 +49,8 @@ jobs:
           exit 1
       - name: show svc again
         run: kubectl -n $INSOLAR_NAMESPACE get svc
+      - name: show ulimit -n
+        run: ulimit -n
       - name: check nginx
         run: |
           curl -v --max-time 5 http://${EXTERNAL_IP}:8080
