@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"strconv"
-	"sync"
 	"time"
 
 	"github.com/insolar/loaderbot"
@@ -34,14 +33,15 @@ func main() {
 	nodeAmount, _ := strconv.Atoi(nodes)
 
 	wAmount := nodeAmount * 1000
-
-	wallets, err := util.CreateWallets(target, wAmount)
+	targets := util.ParseTargets(target)
+	walletsSticky := loaderbot.NewSharedDataSlice(targets)
+	walletsSharedSticky, err := util.CreateWallets(wAmount, walletsSticky)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("wallets created:\n")
-	for _, w := range wallets {
-		fmt.Printf(w + "\n")
+	for _, w := range walletsSharedSticky.Data {
+		fmt.Printf("ref: %s\nurl: %s\n", w.(util.StickyWallet).Ref, w.(util.StickyWallet).Url)
 	}
 	time.Sleep(20 * time.Second)
 	scalingResults := csv.NewWriter(loaderbot.CreateFileOrAppend(scalingCSVFileName))
@@ -56,15 +56,15 @@ func main() {
 			SystemMode:       loaderbot.PrivateSystem,
 			Attackers:        2000,
 			AttackerTimeout:  25,
-			StartRPS:         1500,
+			StartRPS:         3000,
 			StepDurationSec:  30,
-			StepRPS:          100,
-			TestTimeSec:      1800,
+			StepRPS:          500,
+			TestTimeSec:      600,
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
 			&ve_perf_tests.SimpleEchoContractTestAttack{},
-			nil,
+			walletsSharedSticky,
 		)
 		maxRPS, _ := lt.Run(context.TODO())
 		scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
@@ -84,15 +84,15 @@ func main() {
 			SystemMode:       loaderbot.PrivateSystem,
 			Attackers:        2000,
 			AttackerTimeout:  25,
-			StartRPS:         1500,
+			StartRPS:         3000,
 			StepDurationSec:  30,
-			StepRPS:          100,
-			TestTimeSec:      1800,
+			StepRPS:          500,
+			TestTimeSec:      600,
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
 			&ve_perf_tests.EchoContractTestAttack{},
-			nil,
+			walletsSharedSticky,
 		)
 		maxRPS, _ := lt.Run(context.TODO())
 		scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
@@ -113,16 +113,13 @@ func main() {
 			AttackerTimeout:  25,
 			StartRPS:         1000,
 			StepDurationSec:  30,
-			StepRPS:          50,
-			TestTimeSec:      1800,
+			StepRPS:          200,
+			TestTimeSec:      600,
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
 			&ve_perf_tests.GetContractTestAttack{},
-			&util.SharedData{
-				Mutex: &sync.Mutex{},
-				Data:  wallets,
-			},
+			walletsSharedSticky,
 		)
 		maxRPS, _ := lt.Run(context.TODO())
 		scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
@@ -143,16 +140,13 @@ func main() {
 			AttackerTimeout:  25,
 			StartRPS:         1000,
 			StepDurationSec:  30,
-			StepRPS:          50,
-			TestTimeSec:      1800,
+			StepRPS:          200,
+			TestTimeSec:      600,
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
 			&ve_perf_tests.SetContractTestAttack{},
-			&util.SharedData{
-				Mutex: &sync.Mutex{},
-				Data:  wallets,
-			},
+			walletsSharedSticky,
 		)
 		maxRPS2, _ := lt.Run(context.TODO())
 		scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS2)})

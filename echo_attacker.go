@@ -23,7 +23,8 @@ func (a *EchoContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
 	return nil
 }
 func (a *EchoContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
-	url := a.Cfg.TargetUrl + util.WalletGetBalancePath
+	sw := a.TestData.(*loaderbot.SharedDataSlice).Get().(util.StickyWallet)
+	url := sw.Url + util.WalletGetBalancePath
 	_, err := util.GetWalletBalance(a.HTTPClient, url, statemachine.BuiltinTestAPIEcho)
 	if err != nil {
 		return loaderbot.DoResult{

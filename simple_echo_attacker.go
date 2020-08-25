@@ -24,7 +24,8 @@ func (a *SimpleEchoContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
 }
 
 func (a *SimpleEchoContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
-	url := a.Cfg.TargetUrl + util.WalletGetBalancePath
+	sw := a.TestData.(*loaderbot.SharedDataSlice).Get().(util.StickyWallet)
+	url := sw.Url + util.WalletGetBalancePath
 	_, err := util.GetWalletBalance(a.HTTPClient, url, statemachine.BuiltinTestAPIBriefEcho)
 	if err != nil {
 		return loaderbot.DoResult{

@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"sync"
 	"testing"
 
@@ -96,4 +97,22 @@ func (m *SharedData) GetNextData() string {
 	m.Index++
 	m.Unlock()
 	return data
+}
+
+func ParseTargets(target string) []interface{} {
+	var targets []interface{}
+	if strings.Contains(target, " ") {
+		trgs := strings.Split(target, " ")
+		for _, t := range trgs {
+			targets = append(targets, t)
+		}
+	} else {
+		targets = append(targets, target)
+	}
+	return targets
+}
+
+type StickyWallet struct {
+	Url string
+	Ref string
 }

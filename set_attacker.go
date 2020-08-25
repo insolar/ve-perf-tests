@@ -16,8 +16,9 @@ func (a *SetContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
 	return nil
 }
 func (a *SetContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
-	url := a.Cfg.TargetUrl + util.WalletAddAmountPath
-	ref := a.TestData.(*util.SharedData).GetNextData()
+	sw := a.TestData.(*loaderbot.SharedDataSlice).Get().(util.StickyWallet)
+	url := sw.Url + util.WalletAddAmountPath
+	ref := sw.Ref
 	err := util.AddAmountToWallet(a.HTTPClient, url, ref, 100)
 	if err != nil {
 		return loaderbot.DoResult{
