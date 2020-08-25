@@ -81,10 +81,14 @@ jobs:
             fi
           done
           exit 1
-      - name: echo IP's
+      - name: set default api port
         run: |
-          echo ${INSOLAR_SVC_POD_VIRTUAL}
-          exit 1
+          export IFS=" "
+          export IPS_PORTS
+          for ip in $INSOLAR_SVC_POD_VIRTUAL; do
+            IPS_PORTS+="$ip:32301 "
+          done
+          echo ${IPS_PORTS}
       - name: Provide link to grafana
         run:  echo "https://monitoring.uscifarm.insolar.io/d/LmD-fXFZz/ins-network?orgId=1&refresh=10s&var-phase=All&var-packetType=All&var-namespace=$INSOLAR_NAMESPACE&from=now-10m&to=now"
       - name: Set network start time variable
@@ -95,7 +99,7 @@ jobs:
           sleep 60
       - name: start test
         run: |
-          TARGET=http://${INSOLAR_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}') go run cmd/test/main.go
+          TARGET="${IPS_PORTS}" REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}') go run cmd/test/main.go
           cat scaling.csv
       - name: Upload
         uses: actions/upload-artifact@v2
