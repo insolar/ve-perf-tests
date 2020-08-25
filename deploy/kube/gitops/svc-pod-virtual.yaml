@@ -1,0 +1,300 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pod-virtual-0
+  labels:
+    app: ve
+  namespace: $INSOLAR_NAMESPACE
+spec:
+  ports:
+  - name: api
+    port: 19101
+    protocol: TCP
+    targetPort: 19101
+  - name: admin-api
+    port: 19001
+    protocol: TCP
+    targetPort: 19001
+  - name: testwallet-api
+    port: 32301
+    protocol: TCP
+    targetPort: 32301
+  - name: metrics
+    port: 8001
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    statefulset.kubernetes.io/pod-name: virtual-0
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pod-virtual-1
+  labels:
+    app: ve
+  namespace: $INSOLAR_NAMESPACE
+spec:
+  ports:
+  - name: api
+    port: 19101
+    protocol: TCP
+    targetPort: 19101
+  - name: admin-api
+    port: 19001
+    protocol: TCP
+    targetPort: 19001
+  - name: testwallet-api
+    port: 32301
+    protocol: TCP
+    targetPort: 32301
+  - name: metrics
+    port: 8001
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    statefulset.kubernetes.io/pod-name: virtual-1
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pod-virtual-2
+  labels:
+    app: ve
+  namespace: $INSOLAR_NAMESPACE
+spec:
+  ports:
+  - name: api
+    port: 19101
+    protocol: TCP
+    targetPort: 19101
+  - name: admin-api
+    port: 19001
+    protocol: TCP
+    targetPort: 19001
+  - name: testwallet-api
+    port: 32301
+    protocol: TCP
+    targetPort: 32301
+  - name: metrics
+    port: 8001
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    statefulset.kubernetes.io/pod-name: virtual-2
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pod-virtual-3
+  labels:
+    app: ve
+  namespace: $INSOLAR_NAMESPACE
+spec:
+  ports:
+  - name: api
+    port: 19101
+    protocol: TCP
+    targetPort: 19101
+  - name: admin-api
+    port: 19001
+    protocol: TCP
+    targetPort: 19001
+  - name: testwallet-api
+    port: 32301
+    protocol: TCP
+    targetPort: 32301
+  - name: metrics
+    port: 8001
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    statefulset.kubernetes.io/pod-name: virtual-3
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pod-virtual-4
+  labels:
+    app: ve
+  namespace: $INSOLAR_NAMESPACE
+spec:
+  ports:
+  - name: api
+    port: 19101
+    protocol: TCP
+    targetPort: 19101
+  - name: admin-api
+    port: 19001
+    protocol: TCP
+    targetPort: 19001
+  - name: testwallet-api
+    port: 32301
+    protocol: TCP
+    targetPort: 32301
+  - name: metrics
+    port: 8001
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    statefulset.kubernetes.io/pod-name: virtual-4
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pod-virtual-5
+  labels:
+    app: ve
+  namespace: $INSOLAR_NAMESPACE
+spec:
+  ports:
+  - name: api
+    port: 19101
+    protocol: TCP
+    targetPort: 19101
+  - name: admin-api
+    port: 19001
+    protocol: TCP
+    targetPort: 19001
+  - name: testwallet-api
+    port: 32301
+    protocol: TCP
+    targetPort: 32301
+  - name: metrics
+    port: 8001
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    statefulset.kubernetes.io/pod-name: virtual-5
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pod-virtual-6
+  labels:
+    app: ve
+  namespace: $INSOLAR_NAMESPACE
+spec:
+  ports:
+  - name: api
+    port: 19101
+    protocol: TCP
+    targetPort: 19101
+  - name: admin-api
+    port: 19001
+    protocol: TCP
+    targetPort: 19001
+  - name: testwallet-api
+    port: 32301
+    protocol: TCP
+    targetPort: 32301
+  - name: metrics
+    port: 8001
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    statefulset.kubernetes.io/pod-name: virtual-6
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pod-virtual-7
+  labels:
+    app: ve
+  namespace: $INSOLAR_NAMESPACE
+spec:
+  ports:
+  - name: api
+    port: 19101
+    protocol: TCP
+    targetPort: 19101
+  - name: admin-api
+    port: 19001
+    protocol: TCP
+    targetPort: 19001
+  - name: testwallet-api
+    port: 32301
+    protocol: TCP
+    targetPort: 32301
+  - name: metrics
+    port: 8001
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    statefulset.kubernetes.io/pod-name: virtual-7
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pod-virtual-8
+  labels:
+    app: ve
+  namespace: $INSOLAR_NAMESPACE
+spec:
+  ports:
+  - name: api
+    port: 19101
+    protocol: TCP
+    targetPort: 19101
+  - name: admin-api
+    port: 19001
+    protocol: TCP
+    targetPort: 19001
+  - name: testwallet-api
+    port: 32301
+    protocol: TCP
+    targetPort: 32301
+  - name: metrics
+    port: 8001
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    statefulset.kubernetes.io/pod-name: virtual-8
+  sessionAffinity: None
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pod-virtual-9
+  labels:
+    app: ve
+  namespace: $INSOLAR_NAMESPACE
+spec:
+  ports:
+  - name: api
+    port: 19101
+    protocol: TCP
+    targetPort: 19101
+  - name: admin-api
+    port: 19001
+    protocol: TCP
+    targetPort: 19001
+  - name: testwallet-api
+    port: 32301
+    protocol: TCP
+    targetPort: 32301
+  - name: metrics
+    port: 8001
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    statefulset.kubernetes.io/pod-name: virtual-9
+  sessionAffinity: None
+  type: LoadBalancer
