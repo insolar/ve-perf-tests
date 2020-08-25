@@ -6,7 +6,6 @@ metadata:
   labels:
     app: nginx-test
 spec:
-  replicas: 5
   selector:
     matchLabels:
       app: nginx-test
@@ -23,7 +22,7 @@ spec:
           imagePullPolicy: Always
           resources:
             limits:
-              cpu: 3800m
+              cpu: 500m
             requests:
               cpu: 500m
 ---
