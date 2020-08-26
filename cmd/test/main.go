@@ -34,7 +34,9 @@ func main() {
 
 	wAmount := nodeAmount * 1000
 	targets := util.ParseTargets(target)
-	targets = targets[:nodeAmount]
+	if len(targets) > 5 {
+		targets = targets[:nodeAmount]
+	}
 	walletsSticky := loaderbot.NewSharedDataSlice(targets)
 	walletsSharedSticky, err := util.CreateWallets(wAmount, walletsSticky)
 	if err != nil {
@@ -55,12 +57,12 @@ func main() {
 			TargetUrl:        target,
 			Name:             "simple_echo_attack",
 			SystemMode:       loaderbot.PrivateSystem,
-			Attackers:        2000,
+			Attackers:        5000,
 			AttackerTimeout:  25,
-			StartRPS:         3000,
+			StartRPS:         40000,
 			StepDurationSec:  30,
 			StepRPS:          500,
-			TestTimeSec:      600,
+			TestTimeSec:      30,
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
@@ -83,12 +85,12 @@ func main() {
 			TargetUrl:        target,
 			Name:             "echo_attack",
 			SystemMode:       loaderbot.PrivateSystem,
-			Attackers:        2000,
+			Attackers:        5000,
 			AttackerTimeout:  25,
-			StartRPS:         3000,
+			StartRPS:         40000,
 			StepDurationSec:  30,
 			StepRPS:          500,
-			TestTimeSec:      600,
+			TestTimeSec:      30,
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
@@ -110,12 +112,12 @@ func main() {
 			TargetUrl:        target,
 			Name:             "get_attack",
 			SystemMode:       loaderbot.PrivateSystem,
-			Attackers:        2000,
+			Attackers:        5000,
 			AttackerTimeout:  25,
-			StartRPS:         1000,
+			StartRPS:         10000,
 			StepDurationSec:  30,
-			StepRPS:          200,
-			TestTimeSec:      600,
+			StepRPS:          500,
+			TestTimeSec:      30,
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
@@ -137,12 +139,12 @@ func main() {
 			TargetUrl:        target,
 			Name:             "set_attack",
 			SystemMode:       loaderbot.PrivateSystem,
-			Attackers:        2000,
+			Attackers:        5000,
 			AttackerTimeout:  25,
-			StartRPS:         1000,
+			StartRPS:         10000,
 			StepDurationSec:  30,
-			StepRPS:          200,
-			TestTimeSec:      600,
+			StepRPS:          500,
+			TestTimeSec:      30,
 			FailOnFirstError: true,
 		}
 		lt := loaderbot.NewRunner(cfg,
