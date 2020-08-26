@@ -34,6 +34,7 @@ func main() {
 
 	wAmount := nodeAmount * 1000
 	targets := util.ParseTargets(target)
+	targets = targets[:nodeAmount]
 	walletsSticky := loaderbot.NewSharedDataSlice(targets)
 	walletsSharedSticky, err := util.CreateWallets(wAmount, walletsSticky)
 	if err != nil {
