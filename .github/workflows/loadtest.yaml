@@ -172,12 +172,12 @@ jobs:
         with:
           name: html_report
           path: "**/*.html"
-      - name: Send notification to Slack
-        if: always()
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow
-          text: 'https://reports.garage.insolar.io/ve-perf-tests/${{ env.FILE_NAME }}'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.ACTIONS_NOTIFICATIONS_SLACK_HOOK_URL }}
+#      - name: Send notification to Slack
+#        if: always()
+#        uses: 8398a7/action-slack@v3
+#        with:
+#          status: ${{ job.status }}
+#          fields: repo,message,commit,author,action,eventName,ref,workflow
+#          text: 'https://reports.garage.insolar.io/ve-perf-tests/${{ env.FILE_NAME }}'
+#        env:
+#          SLACK_WEBHOOK_URL: ${{ secrets.ACTIONS_NOTIFICATIONS_SLACK_HOOK_URL }}
