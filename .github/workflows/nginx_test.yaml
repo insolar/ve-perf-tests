@@ -1,0 +1,66 @@
+name: nginx-test
+on:
+  pull_request:
+  schedule:
+    - cron: '0 1 * * *'
+env:
+  KUBECONFIG: "${{ github.workspace }}/aks.yaml"
+  GO_VERSION: 1.14
+  GOPATH: /home/runner/work/
+  GOPROXY: https://proxy.golang.org,https://goproxy.io,direct
+  ACR_HOST: usciregistry.azurecr.io
+  PROMETHEUS_USER: ${{secrets.PROMETHEUS_USER}}
+  PROMETHEUS_PASS: ${{secrets.PROMETHEUS_PASS}}
+jobs:
+  nginx-test:
+    name: nginx-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout test
+        uses: actions/checkout@v2
+      - name: Preparation - save kubeconfig
+        run: echo "${{secrets.CLOUD_KUBECONFIG}}" >> aks.yaml
+      - name: Praparation - github token for gitops access
+        run: git config --global url."https://${{secrets.INS_SERVICE_PAT}}@github.com/".insteadOf "https://github.com/"
+      - name: set namespace
+        run: |
+          echo "::set-env name=INSOLAR_NAMESPACE::insolar-nginx-test"
+      - name: create ns
+        run: kubectl create ns ${INSOLAR_NAMESPACE}
+      - name: Deploy nginx
+        run: |
+          kubectl -n $INSOLAR_NAMESPACE apply -f deploy/kube/nginx_test/deployment.yaml
+      - name: wait nginx is ready
+        run: |
+          sleep 120
+      - name: show svc
+        run: kubectl -n $INSOLAR_NAMESPACE get svc
+      - name: set externalIP
+        run: |
+          for attempt in {1..260}; do
+            IP=$(kubectl -n $INSOLAR_NAMESPACE get svc nginx-test-service -o=custom-columns=IP:.status.loadBalancer.ingress[].ip --no-headers)
+            if [[ "${IP}" != "<none>" ]]; then
+              echo "::set-env name=EXTERNAL_IP::${IP}"
+              exit 0
+            else
+              sleep $attempt
+            fi
+          done
+          exit 1
+      - name: show svc again
+        run: kubectl -n $INSOLAR_NAMESPACE get svc
+      - name: show ulimit -n
+        run: ulimit -n
+      - name: check nginx
+        run: |
+          curl -v --max-time 5 http://${EXTERNAL_IP}:8080
+      - name: start test
+        run: |
+          TARGET=http://${EXTERNAL_IP}:8080 go run cmd/nginx_test/main.go
+      - name: cleanup
+        if: always()
+        run: |
+          kubectl -n $INSOLAR_NAMESPACE delete deployments nginx-deployment
+      - name: delete ns
+        if: always()
+        run: kubectl delete ns --grace-period=0 --force insolar-nginx-test

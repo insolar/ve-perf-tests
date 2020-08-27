@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: insolar-nginx-test
+  name: nginx-deployment
+  labels:
+    app: nginx-test
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: nginx-test
+  template:
+    metadata:
+      labels:
+        app: nginx-test
+    spec:
+      containers:
+        - name: nginx-test
+          ports:
+            - containerPort: 80
+          image: docker.io/f4hrenh9it/insolar_nginx_test:1.0
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 3800m
+            requests:
+              cpu: 3800m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: insolar-nginx-test
+  name: nginx-test-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx-test
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
