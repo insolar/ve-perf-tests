@@ -14,7 +14,7 @@ env:
 jobs:
   prepare:
     name: prepare
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout assured-ledger
         uses: actions/checkout@v2
@@ -34,7 +34,7 @@ jobs:
   ve-perf-test:
     name: ve-perf-test
     needs: prepare
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       max-parallel: 1
       matrix:
@@ -147,7 +147,7 @@ jobs:
     name: ve-perf-report
     needs: ve-perf-test
     if: ${{ always() }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout test
         uses: actions/checkout@v2
