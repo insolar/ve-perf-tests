@@ -103,34 +103,6 @@ func main() {
 	fmt.Printf("waiting next test\n")
 	time.Sleep(40 * time.Second)
 
-	// echo run
-	// request is handled by TestWalletSM, but does not start get balance processing
-	// sm goes to conveyor, then runs adapter, and returns result immediately
-	{
-		cfg := &loaderbot.RunnerConfig{
-			TargetUrl:        target,
-			Name:             "echo_attack",
-			SystemMode:       loaderbot.PrivateSystem,
-			Attackers:        5000,
-			AttackerTimeout:  25,
-			StartRPS:         3000,
-			StepDurationSec:  30,
-			StepRPS:          1000,
-			TestTimeSec:      600,
-			FailOnFirstError: true,
-		}
-		lt := loaderbot.NewRunner(cfg,
-			&ve_perf_tests.EchoContractTestAttack{},
-			walletsSharedSticky,
-		)
-		maxRPS, _ := lt.Run(context.TODO())
-		scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
-		fmt.Printf("max rps: %.2f\n", maxRPS)
-	}
-
-	fmt.Printf("waiting next test\n")
-	time.Sleep(40 * time.Second)
-
 	// simple echo run
 	// almost plain http echo
 	// no staate machines or conveyor
@@ -149,6 +121,34 @@ func main() {
 		}
 		lt := loaderbot.NewRunner(cfg,
 			&ve_perf_tests.SimpleEchoContractTestAttack{},
+			walletsSharedSticky,
+		)
+		maxRPS, _ := lt.Run(context.TODO())
+		scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
+		fmt.Printf("max rps: %.2f\n", maxRPS)
+	}
+
+	fmt.Printf("waiting next test\n")
+	time.Sleep(40 * time.Second)
+
+	// echo run
+	// request is handled by TestWalletSM, but does not start get balance processing
+	// sm goes to conveyor, then runs adapter, and returns result immediately
+	{
+		cfg := &loaderbot.RunnerConfig{
+			TargetUrl:        target,
+			Name:             "echo_attack",
+			SystemMode:       loaderbot.PrivateSystem,
+			Attackers:        5000,
+			AttackerTimeout:  25,
+			StartRPS:         3000,
+			StepDurationSec:  30,
+			StepRPS:          1000,
+			TestTimeSec:      600,
+			FailOnFirstError: true,
+		}
+		lt := loaderbot.NewRunner(cfg,
+			&ve_perf_tests.EchoContractTestAttack{},
 			walletsSharedSticky,
 		)
 		maxRPS, _ := lt.Run(context.TODO())
