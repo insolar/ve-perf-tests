@@ -7,7 +7,6 @@ package ve_perf_tests
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/insolar/assured-ledger/ledger-core/application/testwalletapi/statemachine"
 	"github.com/insolar/loaderbot"
@@ -17,17 +16,16 @@ import (
 
 type EchoContractTestAttack struct {
 	*loaderbot.Runner
-	client  *http.Client
 	echoRef string
 }
 
 func (a *EchoContractTestAttack) Setup(cfg loaderbot.RunnerConfig) error {
-	a.client = loaderbot.NewLoggingHTTPClient(cfg.DumpTransport, 60)
 	return nil
 }
 func (a *EchoContractTestAttack) Do(_ context.Context) loaderbot.DoResult {
-	url := a.Cfg.TargetUrl + util.WalletGetBalancePath
-	_, err := util.GetWalletBalance(a.client, url, statemachine.BuiltinTestAPIEcho)
+	sw := a.TestData.(*loaderbot.SharedDataSlice).Get().(util.StickyWallet)
+	url := sw.Url + util.WalletGetBalancePath
+	_, err := util.GetWalletBalance(a.HTTPClient, url, statemachine.BuiltinTestAPIEcho)
 	if err != nil {
 		return loaderbot.DoResult{
 			Error:        err.Error(),

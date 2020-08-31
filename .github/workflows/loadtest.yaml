@@ -64,8 +64,23 @@ jobs:
         run: |
           kubectl kustomize deploy/kube/gitops/"$INSOLAR_NETWORK_SIZE" | envsubst '${INSOLAR_NAMESPACE} ${INSOLAR_TAG}' | kubectl -n $INSOLAR_NAMESPACE apply -f -
           cat deploy/kube/gitops/uscifarm-ingressroute.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl apply -f -
+          cat deploy/kube/gitops/svc-pod-virtual.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl apply -f -
       - name: Rollout check (IF THIS STEP FAILED - CALL DEV/OPS, YELLOW ALERT)
         run: kubectl -n $INSOLAR_NAMESPACE rollout status sts/virtual --timeout=10m
+      - name: get IPs
+        run: |
+          for attempt in {1..180}; do
+            IP=$(kubectl -n $INSOLAR_NAMESPACE get svc pod-virtual-rr -o=custom-columns=IP:.status.loadBalancer.ingress[].ip --no-headers)
+            if [[ "${IP}" != "<none>" ]]; then
+              TARGET="http://$(kubectl -n $INSOLAR_NAMESPACE get svc pod-virtual-rr -o jsonpath='{.status.loadBalancer.ingress[].ip}'):32301"
+              echo ${TARGET}
+              echo "::set-env name=TARGET::${TARGET}"
+              exit 0
+            else
+              sleep $attempt
+            fi
+          done
+          exit 1
       - name: Provide link to grafana
         run:  echo "https://monitoring.uscifarm.insolar.io/d/LmD-fXFZz/ins-network?orgId=1&refresh=10s&var-phase=All&var-packetType=All&var-namespace=$INSOLAR_NAMESPACE&from=now-10m&to=now"
       - name: Set network start time variable
@@ -76,7 +91,7 @@ jobs:
           sleep 60
       - name: start test
         run: |
-          TARGET=http://${INSOLAR_NAMESPACE}.uscifarm.insolar.io REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}') go run cmd/test/main.go
+          REPORT_CSV_FILE=scaling.csv WALLETS=100 NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}') go run cmd/test/main.go
           cat scaling.csv
       - name: Upload
         uses: actions/upload-artifact@v2
