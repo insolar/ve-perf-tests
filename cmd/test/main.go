@@ -62,7 +62,7 @@ func main() {
 	// 		StepDurationSec:  30,
 	// 		StepRPS:          200,
 	// 		TestTimeSec:      900,
-	// 		FailOnFirstError: true,
+	// 		SuccessRatio:    0.95,
 	// 	}
 	// 	lt := loaderbot.NewRunner(cfg,
 	// 		&ve_perf_tests.GetContractTestAttack{},
@@ -89,7 +89,7 @@ func main() {
 	// 		StepDurationSec:  30,
 	// 		StepRPS:          200,
 	// 		TestTimeSec:      900,
-	// 		FailOnFirstError: true,
+	// 		SuccessRatio:    0.95,
 	// 	}
 	// 	lt := loaderbot.NewRunner(cfg,
 	// 		&ve_perf_tests.SetContractTestAttack{},
@@ -108,16 +108,16 @@ func main() {
 	// no staate machines or conveyor
 	{
 		cfg := &loaderbot.RunnerConfig{
-			TargetUrl:        target,
-			Name:             "simple_echo_attack",
-			SystemMode:       loaderbot.PrivateSystem,
-			Attackers:        5000,
-			AttackerTimeout:  25,
-			StartRPS:         10000,
-			StepDurationSec:  30,
-			StepRPS:          2000,
-			TestTimeSec:      600,
-			FailOnFirstError: true,
+			TargetUrl:       target,
+			Name:            "simple_echo_attack",
+			SystemMode:      loaderbot.PrivateSystem,
+			Attackers:       5000,
+			AttackerTimeout: 25,
+			StartRPS:        10000,
+			StepDurationSec: 30,
+			StepRPS:         2000,
+			TestTimeSec:     600,
+			SuccessRatio:    0.95,
 		}
 		lt := loaderbot.NewRunner(cfg,
 			&ve_perf_tests.SimpleEchoContractTestAttack{},
@@ -136,16 +136,16 @@ func main() {
 	// sm goes to conveyor, then runs adapter, and returns result immediately
 	{
 		cfg := &loaderbot.RunnerConfig{
-			TargetUrl:        target,
-			Name:             "echo_attack",
-			SystemMode:       loaderbot.PrivateSystem,
-			Attackers:        5000,
-			AttackerTimeout:  25,
-			StartRPS:         3000,
-			StepDurationSec:  30,
-			StepRPS:          1000,
-			TestTimeSec:      600,
-			FailOnFirstError: true,
+			TargetUrl:       target,
+			Name:            "echo_attack",
+			SystemMode:      loaderbot.PrivateSystem,
+			Attackers:       5000,
+			AttackerTimeout: 25,
+			StartRPS:        3000,
+			StepDurationSec: 30,
+			StepRPS:         1000,
+			TestTimeSec:     600,
+			SuccessRatio:    0.95,
 		}
 		lt := loaderbot.NewRunner(cfg,
 			&ve_perf_tests.EchoContractTestAttack{},
