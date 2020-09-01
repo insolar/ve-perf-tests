@@ -55,7 +55,7 @@ func main() {
 		cfg := &loaderbot.RunnerConfig{
 			TargetUrl:       target,
 			Name:            "get_attack",
-			SystemMode:      loaderbot.PrivateSystem,
+			SystemMode:      loaderbot.OpenWorldSystem,
 			Attackers:       10000,
 			AttackerTimeout: 25,
 			StartRPS:        1000,
@@ -138,7 +138,7 @@ func main() {
 		cfg := &loaderbot.RunnerConfig{
 			TargetUrl:       target,
 			Name:            "echo_attack",
-			SystemMode:      loaderbot.PrivateSystem,
+			SystemMode:      loaderbot.OpenWorldSystem,
 			Attackers:       10000,
 			AttackerTimeout: 25,
 			StartRPS:        3000,
