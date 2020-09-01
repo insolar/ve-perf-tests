@@ -93,7 +93,7 @@ jobs:
             [[ "${STATUS}" == "Running" ]] || sleep $attempt
           done
           kubectl exec ve-perf-tests -n $INSOLAR_NAMESPACE -- go run cmd/test/main.go
-          kubectl cp ve-perf-tests:scaling.csv . -n $INSOLAR_NAMESPACE
+          kubectl cp ve-perf-tests:scaling.csv ./scaling.csv -n $INSOLAR_NAMESPACE
           cat scaling.csv
       - name: Upload
         uses: actions/upload-artifact@v2
