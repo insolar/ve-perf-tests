@@ -61,7 +61,7 @@ func main() {
 			StartRPS:        1000,
 			StepDurationSec: 30,
 			StepRPS:         200,
-			TestTimeSec:     10,
+			TestTimeSec:     900,
 			SuccessRatio:    0.95,
 		}
 		lt := loaderbot.NewRunner(cfg,
@@ -144,7 +144,7 @@ func main() {
 			StartRPS:        3000,
 			StepDurationSec: 30,
 			StepRPS:         1000,
-			TestTimeSec:     10,
+			TestTimeSec:     900,
 			SuccessRatio:    0.95,
 		}
 		lt := loaderbot.NewRunner(cfg,
