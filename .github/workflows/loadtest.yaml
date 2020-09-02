@@ -98,6 +98,8 @@ jobs:
           done
           kubectl exec ve-perf-tests -n $INSOLAR_NAMESPACE -- go run cmd/test/main.go
           kubectl cp ve-perf-tests:scaling.csv ./scaling.csv -n $INSOLAR_NAMESPACE
+          kubectl cp ve-perf-tests:results_csv/ ./ -n $INSOLAR_NAMESPACE
+          kubectl cp ve-perf-tests:results_html/ ./ -n $INSOLAR_NAMESPACE
           cat scaling.csv
       - name: Upload
         uses: actions/upload-artifact@v2
