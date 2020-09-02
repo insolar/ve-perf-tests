@@ -9,11 +9,15 @@ on:
 env:
   KUBECONFIG: "${{ github.workspace }}/aks.yaml"
   GO_VERSION: 1.14
+  LOGCLI_VERSION: v1.6.0
   GOPATH: /home/runner/work/
   GOPROXY: https://proxy.golang.org,https://goproxy.io,direct
   ACR_HOST: usciregistry.azurecr.io
   PROMETHEUS_USER: ${{secrets.PROMETHEUS_USER}}
   PROMETHEUS_PASS: ${{secrets.PROMETHEUS_PASS}}
+  LOKI_USERNAME: ${{secrets.PROMETHEUS_USER}}
+  LOKI_PASSWORD: ${{secrets.PROMETHEUS_PASS}}
+  LOKI_URL: "https://loki.uscifarm.insolar.io"
 jobs:
   prepare:
     name: prepare
@@ -100,13 +104,24 @@ jobs:
         with:
           name: ${{matrix.target}}-scaling.csv
           path: scaling.csv
-      - name: aggregate logs
+      - name: get logcli
         if: always()
         run: |
+          mkdir -p $GITHUB_WORKSPACE/bin
+          curl -L -s "https://github.com/grafana/loki/releases/download/$LOGCLI_VERSION/logcli-linux-amd64.zip" -o logcli.zip
+          unzip -p logcli.zip "logcli-linux-amd64" > $GITHUB_WORKSPACE/bin/logcli
+          chmod +x bin/logcli
+          echo "::add-path::$GITHUB_WORKSPACE/bin"
+      - name: aggregate logs
+        if: always()
+        env:
+          TARGET: ${{matrix.target}}
+        run: |
+          echo "Waiting for logs to settle"
+          sleep 5m
           mkdir -p logs/${INSOLAR_NAMESPACE}
-          curl -G -s -u "$PROMETHEUS_USER:$PROMETHEUS_PASS" "https://loki.uscifarm.insolar.io/loki/api/v1/query_range" --data-urlencode 'query={namespace="'$INSOLAR_NAMESPACE'", pod="pulsar-0"}' --data-urlencode 'query_type=filter' --data-urlencode 'range_type=range' --data-urlencode 'length=215m1s' --data-urlencode 'step=1s' --data-urlencode 'limit=5000000' | jq '.data.result[].values[] | join(",")' | cut -d ',' -f2- > logs/${INSOLAR_NAMESPACE}/pulsar-0.log
-          for pod in $(kubectl -n $INSOLAR_NAMESPACE get po -lapp=virtual -o=custom-columns=NAME:.metadata.name --no-headers); do
-            curl -G -s -u "$PROMETHEUS_USER:$PROMETHEUS_PASS" "https://loki.uscifarm.insolar.io/loki/api/v1/query_range" --data-urlencode 'query={namespace="'$INSOLAR_NAMESPACE'", pod="'$pod'"}' --data-urlencode 'query_type=filter' --data-urlencode 'range_type=range' --data-urlencode 'length=215m1s' --data-urlencode 'step=1s' --data-urlencode 'limit=5000000' | jq '.data.result[].values[] | join(",")' | cut -d ',' -f2- > logs/${INSOLAR_NAMESPACE}/$pod.log
+          for pod in $(kubectl -n $INSOLAR_NAMESPACE get po -l 'app in (virtual, pulsar)' -o=custom-columns=NAME:.metadata.name --no-headers); do
+            logcli --addr="$LOKI_URL" query '{namespace="'$INSOLAR_NAMESPACE'", pod="'$pod'"}' --no-labels -q --since=4h --limit=5000000 --output=raw --forward --batch=250000 > logs/${INSOLAR_NAMESPACE}/"$pod".log
           done
       - name: create stats from logs
         run: |
