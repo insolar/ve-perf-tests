@@ -161,10 +161,10 @@ jobs:
       - name: Send report
         if: always()
         run: |
-          REPORT_CSV_FILE=scaling.csv REPORT_PNG_FILE=report.png go run cmd/report/main.go
+          REPORT_CSV_FILE=scaling.csv REPORT_HTML_FILE=report.html go run cmd/report/main.go
           filename=$(date +"%F-%H-%M")-${GITHUB_SHA:0:8}.png
           echo "::set-env name=FILE_NAME::${filename}"
-          curl -basic --user "${{ secrets.WEBDAV_USERNAME }}:${{ secrets.WEBDAV_PASSWORD }}" -T report.png "https://reports.garage.insolar.io/ve-perf-tests/${filename}"
+          curl -basic --user "${{ secrets.WEBDAV_USERNAME }}:${{ secrets.WEBDAV_PASSWORD }}" -T report.html "https://reports.garage.insolar.io/ve-perf-tests/${filename}"
       - name: Upload scaling.csv to artifacts
         if: always()
         uses: actions/upload-artifact@v2

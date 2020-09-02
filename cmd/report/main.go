@@ -12,9 +12,9 @@ func main() {
 	if scalingCSVFileName == "" {
 		log.Fatal("env variable REPORT_CSV_FILE must be set, ex.: scaling.csv")
 	}
-	scalingPNGFileName := os.Getenv("REPORT_PNG_FILE")
+	scalingHTMLFileName := os.Getenv("REPORT_HTML_FILE")
 	if scalingCSVFileName == "" {
 		log.Fatal("env variable REPORT_PNG_FILE must be set, ex.: report.png")
 	}
-	loaderbot.ReportScalingSlack(scalingCSVFileName, scalingPNGFileName)
+	loaderbot.ReportScaling(scalingCSVFileName, scalingHTMLFileName)
 }

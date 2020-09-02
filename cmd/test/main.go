@@ -61,7 +61,7 @@ func main() {
 			StartRPS:        1000,
 			StepDurationSec: 30,
 			StepRPS:         200,
-			TestTimeSec:     900,
+			TestTimeSec:     10,
 			SuccessRatio:    0.95,
 		}
 		lt := loaderbot.NewRunner(cfg,
@@ -74,7 +74,7 @@ func main() {
 	}
 
 	fmt.Printf("waiting next test\n")
-	time.Sleep(40 * time.Second)
+	// time.Sleep(40 * time.Second)
 
 	// // set run
 	// // runs tolerable call on wallets
@@ -144,7 +144,7 @@ func main() {
 			StartRPS:        3000,
 			StepDurationSec: 30,
 			StepRPS:         1000,
-			TestTimeSec:     900,
+			TestTimeSec:     10,
 			SuccessRatio:    0.95,
 		}
 		lt := loaderbot.NewRunner(cfg,
