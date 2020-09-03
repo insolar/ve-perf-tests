@@ -49,46 +49,46 @@ func main() {
 	time.Sleep(20 * time.Second)
 	scalingResults := csv.NewWriter(loaderbot.CreateFileOrAppend(scalingCSVFileName))
 
-	// // get run
-	// // runs intolerable call on wallets
-	// {
-	// 	cfg := &loaderbot.RunnerConfig{
-	// 		TargetUrl:        target,
-	// 		Name:             "get_attack",
-	// 		SystemMode:       loaderbot.PrivateSystem,
-	// 		Attackers:        3000,
-	// 		AttackerTimeout:  25,
-	// 		StartRPS:         1000,
-	// 		StepDurationSec:  30,
-	// 		StepRPS:          200,
-	// 		TestTimeSec:      900,
-	// 		SuccessRatio:    0.95,
-	// 	}
-	// 	lt := loaderbot.NewRunner(cfg,
-	// 		&ve_perf_tests.GetContractTestAttack{},
-	// 		walletsSharedSticky,
-	// 	)
-	// 	maxRPS, _ := lt.Run(context.TODO())
-	// 	scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
-	// 	fmt.Printf("max rps: %.2f\n", maxRPS)
-	// }
-	//
-	// fmt.Printf("waiting next test\n")
+	// get run
+	// runs intolerable call on wallets
+	{
+		cfg := &loaderbot.RunnerConfig{
+			TargetUrl:       target,
+			Name:            "get_attack",
+			SystemMode:      loaderbot.OpenWorldSystem,
+			Attackers:       10000,
+			AttackerTimeout: 25,
+			StartRPS:        1000,
+			StepDurationSec: 30,
+			StepRPS:         200,
+			TestTimeSec:     900,
+			SuccessRatio:    0.95,
+		}
+		lt := loaderbot.NewRunner(cfg,
+			&ve_perf_tests.GetContractTestAttack{},
+			walletsSharedSticky,
+		)
+		maxRPS, _ := lt.Run(context.TODO())
+		scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
+		fmt.Printf("max rps: %.2f\n", maxRPS)
+	}
+
+	fmt.Printf("waiting next test\n")
 	// time.Sleep(40 * time.Second)
-	//
+
 	// // set run
 	// // runs tolerable call on wallets
 	// {
 	// 	cfg := &loaderbot.RunnerConfig{
-	// 		TargetUrl:        target,
-	// 		Name:             "set_attack",
-	// 		SystemMode:       loaderbot.PrivateSystem,
-	// 		Attackers:        3000,
-	// 		AttackerTimeout:  25,
-	// 		StartRPS:         1000,
-	// 		StepDurationSec:  30,
-	// 		StepRPS:          200,
-	// 		TestTimeSec:      900,
+	// 		TargetUrl:       target,
+	// 		Name:            "set_attack",
+	// 		SystemMode:      loaderbot.PrivateSystem,
+	// 		Attackers:       8000,
+	// 		AttackerTimeout: 25,
+	// 		StartRPS:        1000,
+	// 		StepDurationSec: 30,
+	// 		StepRPS:         200,
+	// 		TestTimeSec:     900,
 	// 		SuccessRatio:    0.95,
 	// 	}
 	// 	lt := loaderbot.NewRunner(cfg,
@@ -99,37 +99,37 @@ func main() {
 	// 	scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
 	// 	fmt.Printf("max rps: %.2f\n", maxRPS)
 	// }
-	//
+
 	// fmt.Printf("waiting next test\n")
 	// time.Sleep(40 * time.Second)
 
-	// simple echo run
-	// almost plain http echo
-	// no staate machines or conveyor
-	{
-		cfg := &loaderbot.RunnerConfig{
-			TargetUrl:       target,
-			Name:            "simple_echo_attack",
-			SystemMode:      loaderbot.PrivateSystem,
-			Attackers:       5000,
-			AttackerTimeout: 25,
-			StartRPS:        10000,
-			StepDurationSec: 30,
-			StepRPS:         2000,
-			TestTimeSec:     600,
-			SuccessRatio:    0.95,
-		}
-		lt := loaderbot.NewRunner(cfg,
-			&ve_perf_tests.SimpleEchoContractTestAttack{},
-			walletsSharedSticky,
-		)
-		maxRPS, _ := lt.Run(context.TODO())
-		scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
-		fmt.Printf("max rps: %.2f\n", maxRPS)
-	}
-
-	fmt.Printf("waiting next test\n")
-	time.Sleep(40 * time.Second)
+	// // simple echo run
+	// // almost plain http echo
+	// // no staate machines or conveyor
+	// {
+	// 	cfg := &loaderbot.RunnerConfig{
+	// 		TargetUrl:       target,
+	// 		Name:            "simple_echo_attack",
+	// 		SystemMode:      loaderbot.PrivateSystem,
+	// 		Attackers:       5000,
+	// 		AttackerTimeout: 25,
+	// 		StartRPS:        10000,
+	// 		StepDurationSec: 30,
+	// 		StepRPS:         2000,
+	// 		TestTimeSec:     600,
+	// 		SuccessRatio:    0.95,
+	// 	}
+	// 	lt := loaderbot.NewRunner(cfg,
+	// 		&ve_perf_tests.SimpleEchoContractTestAttack{},
+	// 		walletsSharedSticky,
+	// 	)
+	// 	maxRPS, _ := lt.Run(context.TODO())
+	// 	scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
+	// 	fmt.Printf("max rps: %.2f\n", maxRPS)
+	// }
+	//
+	// fmt.Printf("waiting next test\n")
+	// time.Sleep(40 * time.Second)
 
 	// echo run
 	// request is handled by TestWalletSM, but does not start get balance processing
@@ -138,13 +138,13 @@ func main() {
 		cfg := &loaderbot.RunnerConfig{
 			TargetUrl:       target,
 			Name:            "echo_attack",
-			SystemMode:      loaderbot.PrivateSystem,
-			Attackers:       5000,
+			SystemMode:      loaderbot.OpenWorldSystem,
+			Attackers:       10000,
 			AttackerTimeout: 25,
 			StartRPS:        3000,
 			StepDurationSec: 30,
 			StepRPS:         1000,
-			TestTimeSec:     600,
+			TestTimeSec:     900,
 			SuccessRatio:    0.95,
 		}
 		lt := loaderbot.NewRunner(cfg,

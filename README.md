@@ -18,5 +18,5 @@ The test will create NODES*1000 wallets to ensure good distribution
 
 Generate report
 ```
-REPORT_CSV_FILE=scaling.csv REPORT_PNG_FILE=report.png go run cmd/report/main.go
+REPORT_CSV_FILE=scaling.csv REPORT_HTML_FILE=report.html go run cmd/report/main.go
 ```
