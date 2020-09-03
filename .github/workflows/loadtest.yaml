@@ -1,8 +1,5 @@
 name: ve-performance check
 on:
-  push:
-    branches:
-    - NOISSUE-move-workload-to-k8s
   pull_request:
   schedule:
     - cron: '0 1 * * *'
