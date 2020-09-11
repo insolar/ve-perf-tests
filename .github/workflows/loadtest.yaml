@@ -25,7 +25,7 @@ jobs:
         with:
           path: ./assured-ledger
           repository: insolar/assured-ledger
-          ref: master
+          ref: NOISSUE-performance-tests
       - name: Checkout ve-perf-tests
         uses: actions/checkout@v2
         with:
