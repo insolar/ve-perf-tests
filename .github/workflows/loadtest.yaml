@@ -98,6 +98,12 @@ jobs:
           kubectl cp ve-perf-tests:results_csv/ ./ -n $INSOLAR_NAMESPACE
           kubectl cp ve-perf-tests:results_html/ ./ -n $INSOLAR_NAMESPACE
           cat scaling.csv
+      - name: Upload html to artifacts	
+        if: always()	
+        uses: actions/upload-artifact@v2	
+        with:	
+          name: html_report	
+          path: "**/*.html"
       - name: cleanup
         if: always()
         run: |
