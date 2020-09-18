@@ -126,3 +126,9 @@ jobs:
         if: always()	
         run: |	
           REPORT_CSV_FILE=scaling.csv REPORT_HTML_FILE=report.html go run cmd/report/main.go
+      - name: Upload html to artifacts	
+        if: always()	
+        uses: actions/upload-artifact@v2	
+        with:	
+          name: html_report	
+          path: "**/*.html"
