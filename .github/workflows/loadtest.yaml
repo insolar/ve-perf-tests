@@ -73,7 +73,6 @@ jobs:
       - name: Deploy network
         run: |
           kubectl kustomize deploy/kube/gitops/"$INSOLAR_NETWORK_SIZE" | envsubst '${INSOLAR_NAMESPACE} ${INSOLAR_TAG}' | kubectl -n $INSOLAR_NAMESPACE apply -f -
-          cat deploy/kube/gitops/uscifarm-ingressroute.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl apply -f -
           cat deploy/kube/gitops/svc-pod-virtual.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl apply -f -
       - name: Rollout check (IF THIS STEP FAILED - CALL DEV/OPS, YELLOW ALERT)
         run: kubectl -n $INSOLAR_NAMESPACE rollout status sts/virtual --timeout=10m
@@ -107,7 +106,6 @@ jobs:
       - name: cleanup
         if: always()
         run: |
-          cat deploy/kube/gitops/uscifarm-ingressroute.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl delete -f -
           kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
   ve-perf-report:	
     name: ve-perf-report
