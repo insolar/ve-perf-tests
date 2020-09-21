@@ -87,7 +87,7 @@ jobs:
       - name: start test
         run: |
           NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}')
-          kubectl run ve-perf-tests -n $INSOLAR_NAMESPACE --env="TARGET=http://pod-virtual-rr:32301" --env="REPORT_CSV_FILE=scaling.csv" --env="WALLETS=100" --env="NODES=$NODES" --image="$ACR_HOST/ve-perf-tests:${GITHUB_SHA:0:8}" --tty=true -i --attach=false --requests="cpu=3500m,memory=5G" --leave-stdin-open=true -- /bin/bash
+          kubectl run ve-perf-tests -n $INSOLAR_NAMESPACE --env="TARGET=http://pod-virtual-rr:32301" --env="REPORT_CSV_FILE=scaling.csv" --env="WALLETS=100" --env="NODES=$NODES" --image="$ACR_HOST/ve-perf-tests:${GITHUB_SHA:0:8}" --tty=true -i --attach=false --requests="cpu=6,memory=5G" --limits="cpu=7900m,memory=12G" --leave-stdin-open=true -- /bin/bash
           for attempt in {1..30}; do
             STATUS=$(kubectl -n $INSOLAR_NAMESPACE get po ve-perf-tests -o jsonpath='{.status.phase}')
             [[ "${STATUS}" == "Running" ]] || sleep $attempt
