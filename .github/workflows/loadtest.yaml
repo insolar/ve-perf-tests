@@ -98,9 +98,9 @@ jobs:
           kubectl cp ve-perf-tests:results_csv/ ./ -n $INSOLAR_NAMESPACE
           kubectl cp ve-perf-tests:results_html/ ./ -n $INSOLAR_NAMESPACE
           cat scaling.csv
-      - name: Upload html to artifacts	
-        if: always()	
-        uses: actions/upload-artifact@v2	
+      - name: Upload html to artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
         with:	
           name: html_report	
           path: "**/*.html"
@@ -110,25 +110,25 @@ jobs:
           cat deploy/kube/gitops/uscifarm-ingressroute.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl delete -f -
           kubectl delete ns ${INSOLAR_NAMESPACE} --ignore-not-found=true
   ve-perf-report:	
-    name: ve-perf-report	
+    name: ve-perf-report
     needs: ve-perf-test	
     if: ${{ always() }}	
-    runs-on: ubuntu-latest	
-    steps:	
-      - name: Checkout test	
-        uses: actions/checkout@v2	
-      - name: Download all artifacts	
-        uses: actions/download-artifact@v2	
-      - name: concatenate all csv's	
-        run: |	
-          for log in $(ls aks-*/*.csv | awk '{gsub(/[^[0-9]]*/,"");print}' | sort -n); do cat aks-"$log"node-scaling.csv/scaling.csv; done | tee scaling.csv	
-      - name: Send report	
-        if: always()	
-        run: |	
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout test
+        uses: actions/checkout@v2
+      - name: Download all artifacts
+        uses: actions/download-artifact@v2
+      - name: concatenate all csv's
+        run: |
+          for log in $(ls aks-*/*.csv | awk '{gsub(/[^[0-9]]*/,"");print}' | sort -n); do cat aks-"$log"node-scaling.csv/scaling.csv; done | tee scaling.csv
+      - name: Send report
+        if: always()
+        run: |
           REPORT_CSV_FILE=scaling.csv REPORT_HTML_FILE=report.html go run cmd/report/main.go
-      - name: Upload html to artifacts	
-        if: always()	
-        uses: actions/upload-artifact@v2	
-        with:	
-          name: html_report	
+      - name: Upload html to artifacts
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: html_report
           path: "**/*.html"
