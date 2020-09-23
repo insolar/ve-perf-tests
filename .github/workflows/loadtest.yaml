@@ -96,6 +96,8 @@ jobs:
           kubectl cp ve-perf-tests:scaling.csv ./scaling.csv -n $INSOLAR_NAMESPACE
           kubectl cp ve-perf-tests:results_csv/ ./ -n $INSOLAR_NAMESPACE
           kubectl cp ve-perf-tests:results_html/ ./ -n $INSOLAR_NAMESPACE
+      - name: show some results
+        run: |
           cat scaling.csv
       - name: Upload
         uses: actions/upload-artifact@v2

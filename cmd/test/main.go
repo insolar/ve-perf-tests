@@ -131,27 +131,24 @@ func main() {
 	// echo run
 	// request is handled by TestWalletSM, but does not start get balance processing
 	// sm goes to conveyor, then runs adapter, and returns result immediately
-	// {
-	// 	cfg := &loaderbot.RunnerConfig{
-	// 		TargetUrl:       target,
-	// 		Name:            "echo_attack",
-	// 		SystemMode:      loaderbot.OpenWorldSystem,
-	// 		Attackers:       10000,
-	// 		AttackerTimeout: 25,
-	// 		StartRPS:        3000,
-	// 		StepDurationSec: 30,
-	// 		StepRPS:         1000,
-	// 		TestTimeSec:     900,
-	// 		SuccessRatio:    0.95,
-	// 	}
-	// 	lt := loaderbot.NewRunner(cfg,
-	// 		&ve_perf_tests.EchoContractTestAttack{},
-	// 		walletsSharedSticky,
-	// 	)
-	// 	maxRPS, _ := lt.Run(context.TODO())
-	// 	scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
-	// 	fmt.Printf("max rps: %.2f\n", maxRPS)
-	// }
+	{
+		cfg := &loaderbot.RunnerConfig{
+			TargetUrl:       target,
+			Name:            "echo_attack",
+			SystemMode:      loaderbot.UnboundRPS,
+			Attackers:       270,
+			AttackerTimeout: 25,
+			TestTimeSec:     90,
+			SuccessRatio:    0.95,
+		}
+		lt := loaderbot.NewRunner(cfg,
+			&ve_perf_tests.EchoContractTestAttack{},
+			walletsSharedSticky,
+		)
+		maxRPS, _ := lt.Run(context.TODO())
+		scalingResults.Write([]string{lt.Name, nodes, fmt.Sprintf("%.2f", maxRPS)})
+		fmt.Printf("max rps: %.2f\n", maxRPS)
+	}
 
 	scalingResults.Flush()
 }
