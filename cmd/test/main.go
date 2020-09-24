@@ -55,13 +55,10 @@ func main() {
 		cfg := &loaderbot.RunnerConfig{
 			TargetUrl:       target,
 			Name:            "get_attack",
-			SystemMode:      loaderbot.OpenWorldSystem,
-			Attackers:       10000,
+			SystemMode:      loaderbot.UnboundRPS,
+			Attackers:       270,
 			AttackerTimeout: 25,
-			StartRPS:        1000,
-			StepDurationSec: 30,
-			StepRPS:         200,
-			TestTimeSec:     900,
+			TestTimeSec:     60,
 			SuccessRatio:    0.95,
 		}
 		lt := loaderbot.NewRunner(cfg,
@@ -138,13 +135,10 @@ func main() {
 		cfg := &loaderbot.RunnerConfig{
 			TargetUrl:       target,
 			Name:            "echo_attack",
-			SystemMode:      loaderbot.OpenWorldSystem,
-			Attackers:       10000,
+			SystemMode:      loaderbot.UnboundRPS,
+			Attackers:       270,
 			AttackerTimeout: 25,
-			StartRPS:        3000,
-			StepDurationSec: 30,
-			StepRPS:         1000,
-			TestTimeSec:     900,
+			TestTimeSec:     90,
 			SuccessRatio:    0.95,
 		}
 		lt := loaderbot.NewRunner(cfg,
