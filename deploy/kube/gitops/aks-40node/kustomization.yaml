@@ -9,3 +9,5 @@ secretGenerator:
     files:
       - .dockerconfigjson=dockerconfigjson
     type: kubernetes.io/dockerconfigjson
+patchesStrategicMerge:
+  - patch-outputlog.yaml

@@ -48,7 +48,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        target: [aks-5node, aks-10node, aks-15node, aks-20node]
+        target: [aks-5node]
     steps:
       - name: Checkout test
         uses: actions/checkout@v2
@@ -74,6 +74,7 @@ jobs:
         run: |
           kubectl kustomize deploy/kube/gitops/"$INSOLAR_NETWORK_SIZE" | envsubst '${INSOLAR_NAMESPACE} ${INSOLAR_TAG}' | kubectl -n $INSOLAR_NAMESPACE apply -f -
           cat deploy/kube/gitops/svc-pod-virtual.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl apply -f -
+          kubectl kustomize deploy/kube/gitops/rsyslog | envsubst '${INSOLAR_NAMESPACE}' | kubectl -n $INSOLAR_NAMESPACE apply -f -
       - name: Rollout check (IF THIS STEP FAILED - CALL DEV/OPS, YELLOW ALERT)
         run: kubectl -n $INSOLAR_NAMESPACE rollout status sts/virtual --timeout=10m
       - name: Provide link to grafana
@@ -99,6 +100,14 @@ jobs:
       - name: show some results
         run: |
           cat scaling.csv
+      - name: get logs
+        if: always()
+        run: |
+          RSYSLOG_POD=$(kubectl -n $INSOLAR_NAMESPACE get po -lk8s-app=rsyslog -o=custom-columns=NAME:.metadata.name --no-headers)
+          kubectl -n $INSOLAR_NAMESPACE cp $RSYSLOG_POD:/logs logs
+          du -sh logs
+          ls logs
+          cat logs/virtual-0.log | head -n15
       - name: Upload
         uses: actions/upload-artifact@v2
         with:
