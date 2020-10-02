@@ -13,3 +13,5 @@ spec:
             value: "syslog"
           - name: INSOLAR_LOG_OUTPUTPARAMS
             value: "udp:rsyslog:514"
+          - name: INSOLAR_LOG_LEVEL
+            value: debug
