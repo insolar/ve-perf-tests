@@ -48,7 +48,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        target: [aks-5node]
+        target: [aks-5node, aks-10node]
     steps:
       - name: Checkout test
         uses: actions/checkout@v2
@@ -103,11 +103,15 @@ jobs:
       - name: get logs
         if: always()
         run: |
+          kubectl -n $INSOLAR_NAMESPACE delete sts/virtual #stop ve's
+          sleep 10
           RSYSLOG_POD=$(kubectl -n $INSOLAR_NAMESPACE get po -lk8s-app=rsyslog -o=custom-columns=NAME:.metadata.name --no-headers)
           kubectl -n $INSOLAR_NAMESPACE cp $RSYSLOG_POD:/logs logs
-          du -sh logs
-          ls logs
-          cat logs/virtual-0.log | head -n15
+      - name: Upload logs
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{matrix.target}}-logs
+          path: logs
       - name: Upload
         uses: actions/upload-artifact@v2
         with:
