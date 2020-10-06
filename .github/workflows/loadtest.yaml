@@ -48,7 +48,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        target: [aks-5node, aks-10node, aks-15node, aks-20node]
+        target: [aks-80node]
     steps:
       - name: Checkout test
         uses: actions/checkout@v2
