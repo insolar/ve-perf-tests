@@ -74,6 +74,7 @@ jobs:
         run: |
           kubectl kustomize deploy/kube/gitops/"$INSOLAR_NETWORK_SIZE" | envsubst '${INSOLAR_NAMESPACE} ${INSOLAR_TAG}' | kubectl -n $INSOLAR_NAMESPACE apply -f -
           cat deploy/kube/gitops/svc-pod-virtual.yaml | envsubst '${INSOLAR_NAMESPACE}' | kubectl apply -f -
+          kubectl kustomize deploy/kube/gitops/rsyslog | envsubst '${INSOLAR_NAMESPACE}' | kubectl -n $INSOLAR_NAMESPACE apply -f -
       - name: Rollout check (IF THIS STEP FAILED - CALL DEV/OPS, YELLOW ALERT)
         run: kubectl -n $INSOLAR_NAMESPACE rollout status sts/virtual --timeout=10m
       - name: Provide link to grafana
@@ -88,6 +89,7 @@ jobs:
         run: |
           NODES=$(echo $INSOLAR_NETWORK_SIZE | awk '{gsub(/[^[0-9]]*/,"");print}')
           kubectl run ve-perf-tests -n $INSOLAR_NAMESPACE --env="TARGET=http://pod-virtual-rr:32301" --env="REPORT_CSV_FILE=scaling.csv" --env="WALLETS=100" --env="NODES=$NODES" --image="$ACR_HOST/ve-perf-tests:${GITHUB_SHA:0:8}" --tty=true -i --attach=false --requests="cpu=6,memory=5G" --limits="cpu=7900m,memory=12G" --leave-stdin-open=true -- /bin/bash
+          sleep 30
           for attempt in {1..30}; do
             STATUS=$(kubectl -n $INSOLAR_NAMESPACE get po ve-perf-tests -o jsonpath='{.status.phase}')
             [[ "${STATUS}" == "Running" ]] || sleep $attempt
@@ -99,6 +101,19 @@ jobs:
       - name: show some results
         run: |
           cat scaling.csv
+      - name: get logs
+        if: always()
+        run: |
+          kubectl -n $INSOLAR_NAMESPACE delete sts/virtual #stop ve's
+          sleep 10
+          RSYSLOG_POD=$(kubectl -n $INSOLAR_NAMESPACE get po -lk8s-app=rsyslog -o=custom-columns=NAME:.metadata.name --no-headers)
+          kubectl -n $INSOLAR_NAMESPACE cp $RSYSLOG_POD:/logs logs
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{matrix.target}}-logs
+          path: logs
       - name: Upload
         uses: actions/upload-artifact@v2
         with:

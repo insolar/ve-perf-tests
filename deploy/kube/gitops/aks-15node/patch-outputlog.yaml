@@ -1,0 +1,17 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: virtual
+spec:
+  template:
+    spec:
+      containers:
+        - name: insolar
+          env:
+          - name: INSOLAR_LOG_OUTPUTTYPE
+            value: "syslog"
+          - name: INSOLAR_LOG_OUTPUTPARAMS
+            value: "udp:rsyslog:514"
+          - name: INSOLAR_LOG_LEVEL
+            value: debug
