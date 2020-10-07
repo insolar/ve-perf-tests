@@ -103,6 +103,7 @@ jobs:
         run: |
           cat scaling.csv
       - name: get debug
+        if: always()
         run: |
           kubectl -n $INSOLAR_NAMESPACE describe sts/virtual
           kubectl -n $INSOLAR_NAMESPACE get po
