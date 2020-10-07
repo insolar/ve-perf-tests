@@ -105,6 +105,7 @@ jobs:
       - name: get debug
         if: always()
         run: |
+          kubectl -n $INSOLAR_NAMESPACE get sts/virtual
           kubectl -n $INSOLAR_NAMESPACE describe sts/virtual
           kubectl -n $INSOLAR_NAMESPACE get po
       - name: get logs
