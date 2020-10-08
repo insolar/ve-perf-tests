@@ -25,11 +25,11 @@ jobs:
         with:
           path: ./assured-ledger
           repository: insolar/assured-ledger
-          ref: NOISSUE-performance-tests
       - name: Checkout ve-perf-tests
         uses: actions/checkout@v2
         with:
           path: ./ve-perf-tests
+          ref: master
       - name: Build docker images
         run: |
           docker build -t $ACR_HOST/ve-perf-tests:${GITHUB_SHA:0:8} ./ve-perf-tests
