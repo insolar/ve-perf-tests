@@ -2,7 +2,7 @@ name: ve-performance check
 on:
   pull_request:
   schedule:
-    - cron: '0 0 * * 7' # run at midnight on sundays
+    - cron: '0 4 * * 6' # run at 4 am on saturdays
 env:
   KUBECONFIG: "${{ github.workspace }}/aks.yaml"
   GO_VERSION: 1.14
