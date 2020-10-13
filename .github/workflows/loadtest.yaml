@@ -52,7 +52,7 @@ jobs:
         env:
           TARGET: ${{matrix.target}}
         run: |
-          echo "INSOLAR_TAG=${GITHUB_SHA:0:8}"" >> $GITHUB_ENV
+          echo "INSOLAR_TAG=${GITHUB_SHA:0:8}" >> $GITHUB_ENV
           echo "INSOLAR_NETWORK_SIZE=${TARGET}" >> $GITHUB_ENV
           echo "INSOLAR_NAMESPACE=${GITHUB_SHA:0:8}-${TARGET}" >> $GITHUB_ENV
           echo "INSOLAR_DESIRED_UPTIME=300" >> $GITHUB_ENV
