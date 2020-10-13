@@ -2,7 +2,7 @@ name: ve-performance check
 on:
   pull_request:
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '0 4 * * 6' # run at 4 am on saturdays
 env:
   KUBECONFIG: "${{ github.workspace }}/aks.yaml"
   GO_VERSION: 1.14
@@ -12,9 +12,6 @@ env:
   ACR_HOST: usciregistry.azurecr.io
   PROMETHEUS_USER: ${{secrets.PROMETHEUS_USER}}
   PROMETHEUS_PASS: ${{secrets.PROMETHEUS_PASS}}
-  LOKI_USERNAME: ${{secrets.PROMETHEUS_USER}}
-  LOKI_PASSWORD: ${{secrets.PROMETHEUS_PASS}}
-  LOKI_URL: "https://loki.uscifarm.insolar.io"
 jobs:
   prepare:
     name: prepare
@@ -25,7 +22,6 @@ jobs:
         with:
           path: ./assured-ledger
           repository: insolar/assured-ledger
-          ref: NOISSUE-performance-tests
       - name: Checkout ve-perf-tests
         uses: actions/checkout@v2
         with:
@@ -56,10 +52,10 @@ jobs:
         env:
           TARGET: ${{matrix.target}}
         run: |
-          echo "::set-env name=INSOLAR_TAG::${GITHUB_SHA:0:8}"
-          echo "::set-env name=INSOLAR_NETWORK_SIZE::${TARGET}"
-          echo "::set-env name=INSOLAR_NAMESPACE::${GITHUB_SHA:0:8}-${TARGET}"
-          echo "::set-env name=INSOLAR_DESIRED_UPTIME::300"
+          echo "INSOLAR_TAG=${GITHUB_SHA:0:8}" >> $GITHUB_ENV
+          echo "INSOLAR_NETWORK_SIZE=${TARGET}" >> $GITHUB_ENV
+          echo "INSOLAR_NAMESPACE=${GITHUB_SHA:0:8}-${TARGET}" >> $GITHUB_ENV
+          echo "INSOLAR_DESIRED_UPTIME=300" >> $GITHUB_ENV
       - name: Preparation - copy docker auth secret
         run: |
           docker login $ACR_HOST --username ${{secrets.ACR_SP_ID}} --password ${{secrets.ACR_SP_SECRET}}
@@ -80,7 +76,7 @@ jobs:
       - name: Provide link to grafana
         run:  echo "https://monitoring.uscifarm.insolar.io/d/LmD-fXFZz/ins-network?orgId=1&refresh=10s&var-phase=All&var-packetType=All&var-namespace=$INSOLAR_NAMESPACE&from=now-10m&to=now"
       - name: Set network start time variable
-        run:  echo "::set-env name=INSOLAR_START_TIME::$(date +'%s')"
+        run:  echo "INSOLAR_START_TIME=$(date +'%s')" >> $GITHUB_ENV
       - name: wait until uscifarm.insolar.io is ready
         run: |
           echo 'Sadly we dont know a better way than:'
